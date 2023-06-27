@@ -1,0 +1,47 @@
+﻿<Window x:Class="WpfApp1Tech.LematizatorQuest"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1Tech"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="LematizatorQuest" Height="400" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25*"/>
+            <ColumnDefinition Width="25*"/>
+            <ColumnDefinition Width="25*"/>
+            <ColumnDefinition Width="25*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="25*"/>
+        </Grid.RowDefinitions>
+        <Button x:Name="YesOneButton" Content="1 Word" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Click="YesOneButton_Click" Width="60" Height="30" Margin="65,0,0,0" Background="#FFE4FCDF"/>
+        <Button x:Name="YesTwoButton" Content="2 Words" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Click="YesTwoButton_Click" Width="60" Height="30" Background="#FFE4FCDF"/>
+        <Button x:Name="YesThreeButton" Grid.Column="2" Content="3 Words" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Click="YesThreeButton_Click" Width="60" Height="30" Background="#FFE4FCDF"/>
+        <Button x:Name="NoButton" Grid.Column="3" Content="No" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Width="60" Click="NoButton_Click" Height="30" Background="White"/>
+        <TextBlock x:Name="FirstWordBlock" HorizontalAlignment="Left" Margin="10,35,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="170" FontSize="12" Height="33"/>
+        <TextBlock x:Name="SecondWordBlock" HorizontalAlignment="Center" Margin="0,73,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="180" FontSize="12" Height="35" Grid.RowSpan="2"/>
+        <TextBlock x:Name="ThirdWordBlock" HorizontalAlignment="Center" Margin="0,17,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="180" FontSize="12" Height="42" Grid.Row="1"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0,67,0,0" Grid.Row="1" TextWrapping="Wrap" Text="1 or 2 or 3 is technology?" VerticalAlignment="Top" Width="180" FontSize="14" Height="19" Background="#FFE4FCDF"/>
+        <TextBox x:Name="PointInText" Grid.Column="2" HorizontalAlignment="Center" Margin="0,26,0,0" TextWrapping="Wrap" Text="TextOfVacancy" VerticalAlignment="Top" Width="200" Height="147" Grid.RowSpan="2" FontSize="12"/>
+        <Grid Grid.Column="1" Grid.ColumnSpan="2" Margin="266,96,0,0" Grid.RowSpan="2"/>
+        <ProgressBar x:Name="VacancyProgress" Minimum="0" Maximum="100" HorizontalAlignment="Left" Height="30" Grid.Row="2" VerticalAlignment="Center" Width="495" Grid.ColumnSpan="3" Margin="90,0,0,0" Foreground="#FFE4FCDF"/>
+        <TextBlock x:Name="ProgressOf" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="2" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center"/>
+        <TextBox x:Name="DictionaryBox" Grid.Column="3" HorizontalAlignment="Center" Margin="0,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180" Background="#FFE4FCDF" BorderBrush="#FF4063CF" Height="242" Grid.RowSpan="3" Text="someTechWord"/>
+        <TextBlock Grid.Column="3" HorizontalAlignment="Left" Margin="10,11,0,0" TextWrapping="Wrap" Text="Dictionary:" VerticalAlignment="Top"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,11,0,0" TextWrapping="Wrap" Text="Vacancy:" VerticalAlignment="Top"/>
+        <RichTextBox x:Name="RichPointInText" Grid.Column="1" Margin="10,32,10,10" Grid.RowSpan="2" TextChanged="RichTextBox_TextChanged">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text="RichTextBox"/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+
+    </Grid>
+</Window>

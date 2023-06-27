@@ -1,0 +1,76 @@
+﻿<Window x:Class="WpfApp1Tech.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1Tech"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="1200">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="164*"/>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="215*"/>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="65*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="17*"/>
+            <ColumnDefinition Width="63*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Margin="9,4,0,0" HorizontalAlignment="Left" Width="250" Grid.Column="1" Grid.Row="2">
+            <TabControl Margin="0,-84,0,0"  >
+                <TabItem Header="TabItem" Background="Red">
+                    <ListBox x:Name="TopTechResult" d:ItemsSource="{d:SampleData ItemCount=5}" Height="266"/>
+                </TabItem>
+                <TabItem Header="TabItem" Background="SlateBlue" HorizontalAlignment=  "Right">
+                    <Grid Background="#FFE5E5EA">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <ListBox x:Name="TopNoTechResult" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                    </Grid>
+                </TabItem>
+                <Grid/>
+
+            </TabControl>
+        </Grid>
+        <Button x:Name="StartButton" Content="ButtonToStart" HorizontalAlignment="Left" VerticalAlignment="Center" BorderThickness="15,1,1,1" FontFamily="Arial Black" Height="50" Width="102" Grid.Row="3" Click="StartButton_Click" Margin="13,0,0,0" IsEnabled="False"/>
+        <Expander Expanded="Expander_Expanded" Collapsed="Expander_Collapsed" Margin="595,70,0,43" HorizontalAlignment="Left" Width="242" BorderThickness="1,1,1,1" Grid.Column="1" Header="1" Grid.RowSpan="2" Grid.Row="1"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="185,85,0,0" VerticalAlignment="Top" Height="49" Width="65"/>
+        <Button Click ="ButtonSettings_Click" Content="Settings" HorizontalAlignment="Left" Margin="120,108,0,0" VerticalAlignment="Top" Width="60" Height="26"/>
+        <Button x:Name="ButtonHoldList" Content="захолдить" HorizontalAlignment="Left" Margin="13,108,0,0" VerticalAlignment="Top" Height="46" Width="102" IsEnabled="False" Click="ButtonHoldList_Click"/>
+        <ListBox x:Name="ParsDateList" HorizontalContentAlignment="Stretch" Margin="13,154,0,0" Grid.RowSpan="3" SelectionMode="Multiple" HorizontalAlignment="Left" Width="237">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Title}" />
+                        <TextBlock Text="{Binding Title}" />
+                        <ProgressBar Grid.Column="1" Minimum="0" Maximum="10" Value="{Binding CountOfFiles}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="120,0,0,0" Grid.Row="3" VerticalAlignment="Center" Height="50" Width="130" Click="Button_Click"/>
+        <TextBlock HorizontalAlignment="Left" Margin="150,32,0,0" TextWrapping="Wrap" Text="{}{ |Parser| |Saver| |Interpritator| }" VerticalAlignment="Top" Grid.Row="4" Width="340" Height="33" FontSize="24" Grid.Column="1"/>
+        <TextBlock x:Name="ShortTextResult" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Height="134" Width="924" FontSize="8"/>
+        <ComboBox x:Name="SearchBox" HorizontalAlignment="Left" Margin="13,54,0,0" VerticalAlignment="Top" Width="237" IsEditable="True" Initialized="SearchBox_Initialized" IsEnabledChanged="SearchBox_IsEnabledChanged" FontSize="16" ScrollViewer.CanContentScroll="True" Cursor="Help" Height="27" TextInput="SearchBox_TextInput" Drop="SearchBox_Drop" SelectionChanged="SearchBox_SelectionChanged">
+            <ComboBox.Background>
+                <LinearGradientBrush EndPoint="0,0" SpreadMethod="Repeat" MappingMode="Absolute" Opacity="0">
+                    <GradientStop Color="#FFF0F0F0"/>
+                    <GradientStop Color="#FFC02323" Offset="1"/>
+                </LinearGradientBrush>
+            </ComboBox.Background>
+        </ComboBox>
+        <ListBox x:Name="ListTechResult" Grid.Column="1" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionMode="Multiple" Margin="751,30,-30,30" Grid.RowSpan="3" Grid.Row="1"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="105,0,0,0" Grid.Row="3" VerticalAlignment="Center" Height="50" Width="130" Grid.Column="1"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="30,0,0,0" Grid.Row="3" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="180,32,0,0" Grid.Row="4" VerticalAlignment="Top" Click="Button_Click_1"/>
+
+    </Grid>
+
+</Window>
