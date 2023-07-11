@@ -62,6 +62,7 @@ namespace WpfApp1Tech
                // va.StartSet(va.ss);
                // va.ss.ParsFolder = "";
                // va.Show();
+               //rdtgrsrageh5he46sn5474ns46777777777777777777777777777777777777777777777
             }
             catch (Exception ex)
             {
