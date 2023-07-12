@@ -17,6 +17,7 @@ namespace WpfApp1Tech
 {
     /// <summary>
     /// Логика взаимодействия для Lemm2Wind.xaml
+    /// (таска для Lemm2)
     /// </summary>
     public partial class Lemm2Wind : Window
     {

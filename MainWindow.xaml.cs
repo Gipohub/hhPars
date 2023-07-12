@@ -108,7 +108,10 @@ namespace WpfApp1Tech
                 foreach (DateItem item in ParsDateList.SelectedItems)
                 {
                     MessageBox.Show(item.Title + "");
+
+                    var way = System.IO.Path.Combine(settings.ParsFolder, item.Title);
                     
+                    Lemm2.Lemmization(way);
                     //items.Add(new DateItem(item.Title,item.Search,1));
                 }
                 //ListTechResult.ItemsSource = items;

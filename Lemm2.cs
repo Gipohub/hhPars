@@ -28,9 +28,9 @@ namespace WpfApp1Tech
             //Lemmization();
         }
         public static void Lemmization(string[] waysToParsFolder)
-        { foreach(string wayTPF in waysToParsFolder)
+        { foreach(string wayToParsFolder in waysToParsFolder)
             {
-                Lemmization(wayTPF);
+                Lemmization(wayToParsFolder);
             }
         }
         public static void Lemmization(string wayToParsFolder)
@@ -50,23 +50,18 @@ namespace WpfApp1Tech
 
             try // попытка присоединиться к существующему словарю
             {
-                if(File.Exists(System.IO.Path.Combine(wayToParsFolder, $"TechDictionary{shortParsDate}")))
+                if(File.Exists(System.IO.Path.Combine(wayToParsFolder, $"TechDictionary{shortParsDate}.json")))
                 {
-                    MessageBox.Show("ppp");
+                    MessageBox.Show("Словарь доступен");
                 }
                 using var sr = new StreamReader(wayToParsFolder);//чтение потока из указанного файла
                 using var jr = new JsonTextReader(sr);// валидауция например
                 vec = serializer.Deserialize<Vector<TechDictionary>>(jr);
-                
-               // Settings va = new();
-               // va.StartSet(va.ss);
-               // va.ss.ParsFolder = "";
-               // va.Show();yr6yr5rsg5h657e57j6j6j86j86h756g4w5w645g6w45
-               //rdtgrsrageh5he46sn5474ns46777777777777777777777777777777777777777777777
+                              
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Cущ Слов");
+                MessageBox.Show(ex.Message, "Словарь не найден");
             }
             //string path = Settings.ssDef.ParsFolder;
             var morph = new MorphAnalyzer(withLemmatization: true);
@@ -74,16 +69,16 @@ namespace WpfApp1Tech
             int numOfVacancy = 1;
             int comOfVacancy = 1;
 
-            //foreach (var PathDate in waysToParsFolder)
-            //{
+            
+            //далее проходимся по всем найденым парсингом компаниям
                 string[] AllCompanyOfVacacy = Directory.GetDirectories(wayToParsFolder);
                 int directoryCount = AllCompanyOfVacacy.Length;
 
             foreach (var CompanyOfVacancy in AllCompanyOfVacacy)
-            {
+            {//в каждой конкретной компании
 
                 string[] files = Directory.GetFiles(CompanyOfVacancy, "linkText*.json");
-                foreach (string file in files)
+                foreach (string file in files)//находим все вакансии от этой компании
                 {
 
                     serializer = new JsonSerializer();
@@ -96,27 +91,27 @@ namespace WpfApp1Tech
 
                         var taskWindow = new Lemm2Wind(); //далее сбор таски
 
+                        //dic выводится в richTextBox на таске для отображения текущего собранного словаря 
                         string dic = "";
+
+                        //массив-индикатор слов-технологий для индикации их в тексте 
                         int[] dicWordInFileTextIndicator = new int[fileText.Length];
+                        
 
                         for (int i = 0; i < vec.Count; i++)
                         {
                             var needWord = vec.At(i);
                             if (needWord.IsTech)
                             {
-
-                                //for (int t = 0; t < needWord.VectorPerDate.Count; t++)
-                                //{
-                                //    if (shortParsDate == needWord.VectorPerDate.At(t).Date)
-                                //    {
+                                
                                 dic = string.Concat(needWord.Word.ToUpper(), "-", " [", needWord.UsingTimes, "]", "\n***\r", dic);
-
-                                //    }
-                                //}                                    
+                                   
                                 int index = fileText.IndexOf(needWord.Word);
                                 if (index != -1)
                                 {
-                                    do // Поиск всех повторений слова в тексте для подсветки
+                                    //на этом этапе сразу прибавляем найденное знакомое слово-технологию 
+                                    vec.At(i).UsingTimes += 1;
+                                    do // Поиск всех повторений слова-технологии в тексте для подсветки
                                     {
                                         dicWordInFileTextIndicator[index] = index + needWord.Word.Length;// Диапозон нахождения слова в тексте
                                         index = fileText.IndexOf(fileText, dicWordInFileTextIndicator[index]);
@@ -125,6 +120,7 @@ namespace WpfApp1Tech
                                 }
                             }
                         }
+                        //выводим готовый dic
                         taskWindow.DictionaryBox.Document = new FlowDocument(new Paragraph(new Run(dic)));
 
                         var VacancyFlowDoc = new FlowDocument();
@@ -135,31 +131,36 @@ namespace WpfApp1Tech
                         {
 
                             if (dicWordInFileTextIndicator[wr] != 0)
-                            {
+                            {//собираем обычный текст до слова-технологии
                                 var vacancyRun = new Run(fileText.Substring(pointer, wr));
                                 var techBold = new Bold(new Run(fileText[wr..dicWordInFileTextIndicator[wr]]));
                                 techBold.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFEEF5FD");
-                                // Create a paragraph and add the Run and Bold to it.
+                                //слово-технологию раскрашиваем цветным фоном and Bold to it.
 
                                 VacancyParagraph.Inlines.Add(vacancyRun);
                                 VacancyParagraph.Inlines.Add(techBold);
-                                // Add the paragraph to the FlowDocument.
+                                // дополняем flowDocument для richTextBox и перетаскиваем pointer начала поиска технологий
+                                // для следующей иттерации цикла.
                                 pointer = dicWordInFileTextIndicator[wr];
                             }
                         }
                         if (pointer == 0) VacancyParagraph.Inlines.Add(new Run(fileText));
+                        //если слов-технологий в текущем тексте нет, выводим его в box полностью без изменений  
 
                         VacancyFlowDoc.Blocks.Add(VacancyParagraph);
                         taskWindow.VacancyRichTextBox.Document = VacancyFlowDoc;
 
                         taskWindow.ProgressOf.Text = $"{shortParsDate},{numOfVacancy} of {AllCompanyOfVacacy.Length}";
                         taskWindow.VacancyProgress.Value = 100 * (100 * numOfVacancy / AllCompanyOfVacacy.Length);// (100 * waysToPars / waysToParsFolder.Length);
+                        //рассчитываем примерный прогресс сбора словаря
 
-                        taskWindow.ShowDialog();//таска с данными из файла и словаря
-                                                // 
+                        taskWindow.ShowDialog();//отображается собранная таска с данными из файла и словаря
+                                
+                        //НЕ ГОТОВО!!!!!!!!!!!!!!!! 
+                        //ТРЕБУЕТСЯ БУЛЬ НА КАЖДОЙ ИТЕРАЦИИ КАЖДОГО ФОРЫЧА ИНАЧЕ КАСКАДНЫЙ БРИК
                         if (Stop)
                         {
-                            string saveStopDicName = System.IO.Path.Combine(settings.ParsFolder, $"TechDict {shortParsDate}({numOfVacancy}VacCount)");
+                            string saveStopDicName = System.IO.Path.Combine(wayToParsFolder, $"TechDict {shortParsDate}({numOfVacancy}VacCount).json");
 
                             serializer = new JsonSerializer();
                             serializer.Formatting = Formatting.Indented;
@@ -171,125 +172,88 @@ namespace WpfApp1Tech
                                 serializer.Serialize(jw, vec);
 
                             }
+                            break;
                         }
 
 
 
-
+                        //далее нахождение выделенных пользователем слов-технологий из текста в словаре
                         var UseShortPathDate = new UseWordPerDate(shortParsDate, 1);
                         string[] NewTech = taskWindow.NewTech.Split(new char[] { '*' }, StringSplitOptions.RemoveEmptyEntries);
                         for (int i = 0; i < NewTech.Length; i++)
                         {
-
+                            //проходим по словарю и находим технологии
                             for (int j = 0; j < vec.Count; j++)
                                 if (vec.At(j).IsTech)
                                 {
+                                    //если отмеченое слово уже есть, +1 использование.
                                     if (NewTech[i] == vec.At(j).Word)
                                     {
-                                        NewTech[i] = "";
-                                        //for(int k = 0; k < vec.At(j).VectorPerDate.Count; k++)
-                                        //if (vec.At(j).VectorPerDate.At(k).Date == shortParsDate)
-                                        {
-                                            vec.At(j).UsingTimes += 1;
-                                        }
+                                        NewTech[i] = "";//удаление из массива новонайденных
+                                        vec.At(j).UsingTimes += 1;                                        
                                     }
                                 }
-                            if (NewTech[i] != "")
-                            {
-                                //UseWordPerDate date = new(PathDate, 1);
-                                //TechDictionary word = new(numOfVacancy, NewTech[i],  1, true);
-                                //word.VectorPerDate.PushBack(UseShortPathDate);
-                                vec.PushBack(new(numOfVacancy, NewTech[i], 1, true));
-                            }
-
+                            //если слова нет в словаре добавляем
+                            if (NewTech[i] != "")                                                       
+                            vec.PushBack(new(numOfVacancy, NewTech[i], 1, true));
                         }
 
+                        //блок записи всех слов не технологий и подсчет
                         string textWithoultTech = fileText;
                         for (int i = 0; i < vec.Count; i++)
                         {
                             var dicWord = vec.At(i);
                             if (dicWord.IsTech)
                             {
+                                //если слово технология - удаляем, они уже подсчитаны в текущем тексте
                                 textWithoultTech.Replace($"{dicWord.Word}", "");
                             }
                         }
+
+                        //оставшиеся слова приводим к именительному падежу и далее сохраняем или прибавляем
                         string[] words = textWithoultTech.Split(new char[] { ' ', ',', '.', ':', /*'-'*/'–', '—', '\r', '\n', '•', ';', '_', '?', '!', '"', '(', ')', '@', '%', '*', '`', '<', '|', '/', '>', '~', '+', '=' }, StringSplitOptions.RemoveEmptyEntries);
                         var results = morph.Parse(words).ToArray();
 
 
-                        //прогон слов текмта на наличие в словаре 
+                        //прогон слов текста на наличие в словаре 
                         for (int w = 0; w < results.Length; w++)
-                        {
-                            //bool tech = false;
-                            //bool pair = false;
-                            //bool triple = false;
-                            //string[] l;
-                            //if (w == results.Length - 2) { l = new[] { $"{results[w].BestTag.Lemma}", $"{results[w + 1].BestTag.Lemma}", "" }; }
-                            //else if (w == results.Length - 1) { l = new[] { $"{results[w].BestTag.Lemma}", "", "" }; }
-                            //else { l = new[] { $"{results[w].BestTag.Lemma}", $"{results[w + 1].BestTag.Lemma}", $"{results[w + 2].BestTag.Lemma}" }; }
-
-                            int check = 0;
+                        {                           
+                            bool checkItsNew = true;// есть ли слово в словаре
                             string lem = results[w].BestTag.Lemma;
 
                             for (int i = 0; i < vec.Count; i++)
                             {
                                 var dicWord = vec.At(i);
 
-                                //if (l[0] == dicWord.Word || $"{l[0]} {l[1]}" == dicWord.Word || $"{l[0]} {l[1]} {l[2]}" == dicWord.Word)
                                 if (lem == dicWord.Word)
-                                {
-                                    //for (int t = 0; t < dicWord.VectorPerDate.Count; t++)
-                                    //{                                            
-                                    //if (shortParsDate == dicWord.VectorPerDate.At(t).Date)
-                                    //{
+                                {                                    
                                     vec.At(i).UsingTimes += 1;
-                                    check++;
-                                    //   if ($"{l[0]} {l[1]}" == dicWord.Word) w++;
-                                    //   if ($"{l[0]} {l[1]} {l[2]}" == dicWord.Word) { w++; w++; }
-                                    //}
-
-                                    //}
-
+                                    checkItsNew = false;                                  
                                 }
 
                             }
                             /////////////////////////////////////////////////////////...////////
-                            if (check == 0)
+                            if (checkItsNew)//слова в словаре не найдено
                             {
-                                TechDictionary word = new(numOfVacancy, "", new(), Tech);
+                                TechDictionary word = new(numOfVacancy, lem, 1, false);
                                 vec.PushBack(word);
                             }
 
-                            //word.VectorPerDate.PushBack(UseShortPathDate);
-                            //if (Pair == true)
-                            //{ word.Word = $"{l[0]} {l[1]}"; w++; }
-                            //else if (Triple == true)
-                            //{ word.Word = $"{l[0]} {l[1]} {l[2]}"; w++; w++; }
-                            //else
-                            //{ word.Word = l[0]; }
-
-
-
-                            //}
-
                         }
-
 
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "qeqe");
-                        //     ss = ssDef;
+                        MessageBox.Show(ex.Message, "текстовый файл не был обработан");                        
                     }
-                    numOfVacancy += 1;
+                    numOfVacancy += 1;//счетчик подсчета уникальных вакансий
                 }
-                comOfVacancy += 1;
+                comOfVacancy += 1;// счетчик подсчета уникальных компаний
             }
-            //waysToPars += 1;
 
             if (directoryCount > 0)
             {
-                string saveName = System.IO.Path.Combine(settings.ParsFolder, $"TechDictionary {shortParsDate}");
+                string saveName = System.IO.Path.Combine(wayToParsFolder, $"TechDictionary {shortParsDate}.json");
 
                 serializer = new JsonSerializer();
                 serializer.Formatting = Formatting.Indented;
@@ -301,10 +265,10 @@ namespace WpfApp1Tech
                     serializer.Serialize(jw, vec);
 
                 }
+
             }
-                
-            //}
-            
+            else MessageBox.Show("количество доступных для обработки компаний равно нулю, или другая проблема директорий");
+
         }
         void SaveDicVecToJSONFile(dynamic dictionary)
         {

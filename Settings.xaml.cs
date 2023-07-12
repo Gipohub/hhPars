@@ -94,7 +94,7 @@ namespace WpfApp1Tech
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);                
+                MessageBox.Show(ex.Message, "Установлены настройки по умолчанию");                
             }
         }
         public void BtnOpenFolder_Click(object sender, RoutedEventArgs e)

@@ -18,7 +18,7 @@
             <ColumnDefinition Width="17*"/>
             <ColumnDefinition Width="63*"/>
         </Grid.ColumnDefinitions>
-        <Grid Margin="9,4,0,0" HorizontalAlignment="Left" Width="250" Grid.Column="1" Grid.Row="2">
+        <Grid Margin="179,117,0,22" HorizontalAlignment="Left" Width="250" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="2">
             <TabControl Margin="0,-84,0,0"  >
                 <TabItem Header="TabItem" Background="Red">
                     <ListBox x:Name="TopTechResult" d:ItemsSource="{d:SampleData ItemCount=5}" Height="266"/>
@@ -35,12 +35,12 @@
 
             </TabControl>
         </Grid>
-        <Button x:Name="StartButton" Content="ButtonToStart" HorizontalAlignment="Left" VerticalAlignment="Center" BorderThickness="15,1,1,1" FontFamily="Arial Black" Height="50" Width="102" Grid.Row="3" Click="StartButton_Click" Margin="13,0,0,0" IsEnabled="False"/>
+        <Button x:Name="StartButton" Content="ButtonToStart" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="15,1,1,1" FontFamily="Arial Black" Height="50" Width="102" Grid.Row="3" Click="StartButton_Click" Margin="444,63,0,0" IsEnabled="False" Grid.Column="1" Grid.RowSpan="2"/>
         <Expander Expanded="Expander_Expanded" Collapsed="Expander_Collapsed" Margin="595,70,0,43" HorizontalAlignment="Left" Width="242" BorderThickness="1,1,1,1" Grid.Column="1" Header="1" Grid.RowSpan="2" Grid.Row="1"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="185,85,0,0" VerticalAlignment="Top" Height="49" Width="65"/>
-        <Button Click ="ButtonSettings_Click" Content="Settings" HorizontalAlignment="Left" Margin="120,108,0,0" VerticalAlignment="Top" Width="60" Height="26"/>
-        <Button x:Name="ButtonHoldList" Content="захолдить" HorizontalAlignment="Left" Margin="13,108,0,0" VerticalAlignment="Top" Height="46" Width="102" IsEnabled="False" Click="ButtonHoldList_Click"/>
-        <ListBox x:Name="ParsDateList" HorizontalContentAlignment="Stretch" Margin="13,154,0,0" Grid.RowSpan="3" SelectionMode="Multiple" HorizontalAlignment="Left" Width="237">
+        <Button Content="Button" HorizontalAlignment="Left" Margin="299,97,0,0" VerticalAlignment="Top" Height="49" Width="64" Grid.Column="1"/>
+        <Button Click ="ButtonSettings_Click" Content="Settings" HorizontalAlignment="Left" Margin="863,20,0,0" VerticalAlignment="Top" Width="60" Height="26" Grid.Column="1"/>
+        <Button x:Name="ButtonHoldList" Content="захолдить" HorizontalAlignment="Center" Margin="0,97,0,0" VerticalAlignment="Top" Height="46" Width="102" IsEnabled="False" Click="ButtonHoldList_Click" Grid.Column="1"/>
+        <ListBox x:Name="ParsDateList" HorizontalContentAlignment="Stretch" Margin="114,113,0,206" SelectionMode="Multiple" HorizontalAlignment="Left" Width="972" Grid.ColumnSpan="2" Grid.RowSpan="3">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,2">
@@ -55,10 +55,19 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="120,0,0,0" Grid.Row="3" VerticalAlignment="Center" Height="50" Width="130" Click="Button_Click"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="551,63,0,0" Grid.Row="3" VerticalAlignment="Top" Height="50" Width="130" Click="Button_Click" Grid.Column="1" Grid.RowSpan="2"/>
         <TextBlock HorizontalAlignment="Left" Margin="150,32,0,0" TextWrapping="Wrap" Text="{}{ |Parser| |Saver| |Interpritator| }" VerticalAlignment="Top" Grid.Row="4" Width="340" Height="33" FontSize="24" Grid.Column="1"/>
-        <TextBlock x:Name="ShortTextResult" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Height="134" Width="924" FontSize="8"/>
-        <ComboBox x:Name="SearchBox" HorizontalAlignment="Left" Margin="13,54,0,0" VerticalAlignment="Top" Width="237" IsEditable="True" Initialized="SearchBox_Initialized" IsEnabledChanged="SearchBox_IsEnabledChanged" FontSize="16" ScrollViewer.CanContentScroll="True" Cursor="Help" Height="27" TextInput="SearchBox_TextInput" Drop="SearchBox_Drop" SelectionChanged="SearchBox_SelectionChanged">
+        <TextBlock x:Name="ShortTextResult" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="144" Width="146" FontSize="8" RenderTransformOrigin="0.5,0.5" Margin="584,106,0,0" Grid.RowSpan="3">
+            <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+        <ComboBox x:Name="SearchBox" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Width="706" IsEditable="True" Initialized="SearchBox_Initialized" IsEnabledChanged="SearchBox_IsEnabledChanged" FontSize="16" ScrollViewer.CanContentScroll="True" Cursor="Help" Height="52" TextInput="SearchBox_TextInput" Drop="SearchBox_Drop" SelectionChanged="SearchBox_SelectionChanged" Grid.Column="1">
             <ComboBox.Background>
                 <LinearGradientBrush EndPoint="0,0" SpreadMethod="Repeat" MappingMode="Absolute" Opacity="0">
                     <GradientStop Color="#FFF0F0F0"/>
@@ -66,10 +75,10 @@
                 </LinearGradientBrush>
             </ComboBox.Background>
         </ComboBox>
-        <ListBox x:Name="ListTechResult" Grid.Column="1" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionMode="Multiple" Margin="751,30,-30,30" Grid.RowSpan="3" Grid.Row="1"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="105,0,0,0" Grid.Row="3" VerticalAlignment="Center" Height="50" Width="130" Grid.Column="1"/>
-        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="30,0,0,0" Grid.Row="3" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="180,32,0,0" Grid.Row="4" VerticalAlignment="Top" Click="Button_Click_1"/>
+        <ListBox x:Name="ListTechResult" Grid.Column="1" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionMode="Multiple" Margin="215,22,506,33" Grid.RowSpan="3" Grid.Row="2"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="791,63,0,0" Grid.Row="3" VerticalAlignment="Top" Height="50" Width="130" Grid.Column="1" Grid.RowSpan="2"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="716,10,0,0" Grid.Row="4" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="13,10,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
 
     </Grid>
 
