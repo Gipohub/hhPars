@@ -12,14 +12,15 @@ namespace WpfApp1Tech
 {
     internal class Interpreter
     {
-        public Vector<TechDictionary>? VecTech { get; set; } //обьявление словаря технологий
-        public Vector<TechDictionary>? VecNoTech { get; set; } //обьявление словаря прочих слов
-        public Interpreter()
+        public List<TechDictionary>? VecTech = new();// { get; set; } //обьявление словаря технологий
+        public List<TechDictionary>? VecNoTech = new();// { get; set; } //обьявление словаря прочих слов
+        public Interpreter(string wayToDictionaryPath)
         {
-            
-            
-            
-            
+
+            DicReview(wayToDictionaryPath);
+
+
+
         }
 
         internal void DicReview(string wayToDictionaryPath)
@@ -28,19 +29,18 @@ namespace WpfApp1Tech
             {
 
 
-                //string date = MainWindow.DateOfList[0];
+                
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.NullValueHandling = NullValueHandling.Ignore;
-                Vector<TechDictionary>? vec = new(); //обьявление словаря
-                Settings settings = new();
-                string dicPathWay = Path.Combine(settings.ParsFolder, "TechDictionary");
+                List<TechDictionary>? vec = new(); //обьявление словаря
+                
                 try
                 {
 
 
-                    using var sr = new StreamReader(settings.ParsFolder);//чтение потока из указанного файла
+                    using var sr = new StreamReader(wayToDictionaryPath);//чтение потока из указанного файла
                     using var jr = new JsonTextReader(sr);// валидауция например
-                    vec = serializer.Deserialize<Vector<TechDictionary>>(jr);
+                    vec = serializer.Deserialize<List<TechDictionary>>(jr);
                 }
                 catch (Exception ex)
                 {
@@ -49,13 +49,13 @@ namespace WpfApp1Tech
                 }
                 if (vec.Count != 0)
                 {
-                    Vector<TechDictionary>? vecTech; //обьявление словаря технологий
-                    Vector<TechDictionary>? vecNoTech; //обьявление словаря прочих слов
-                    TechDictionary dicTech = vec.Front;
+                    //List<TechDictionary>? vecTech = new(); //обьявление словаря технологий
+                    //List<TechDictionary>? vecNoTech = new(); //обьявление словаря прочих слов
+                    //TechDictionary dicTech = vec.Front;
                     //TechDictionary dicNoTech;
 
-                    int maxUseWordTechCount = 0;
-                    int maxUseWordNoTechCount = 0;
+                    //int maxUseWordTechCount = 0;
+                    //int maxUseWordNoTechCount = 0;
 
 
                     for (int i = 0; i < vec.Count; i++)
@@ -65,18 +65,20 @@ namespace WpfApp1Tech
                         {
                           //  if (vec.At(i).VectorPerDate.At(j).Date == wayToDictionaryPath)
                             {
-                                if (vec.At(i).IsTech)
+                                if (vec[i].IsTech)
                                 {
-                               //     if (vec.At(i).VectorPerDate.At(j).UsingTimes > maxUseWordTechCount)
+                                    this.VecTech.Add(vec[i]);
+                                    //     if (vec.At(i).VectorPerDate.At(j).UsingTimes > maxUseWordTechCount)
                                     {
-                               //         maxUseWordTechCount = vec.At(i).VectorPerDate.At(j).UsingTimes;
+                                        //         maxUseWordTechCount = vec.At(i).VectorPerDate.At(j).UsingTimes;
                                     }
                                 }
                                 else
                                 {
                                //     if (vec.At(i).VectorPerDate.At(j).UsingTimes > maxUseWordNoTechCount)
                                     {
-                              //          maxUseWordTechCount = vec.At(i).VectorPerDate.At(j).UsingTimes;
+                                        this.VecNoTech.Add(vec[i]);
+                                        //          maxUseWordTechCount = vec.At(i).VectorPerDate.At(j).UsingTimes;
                                     }
                                 }
                             }
@@ -84,21 +86,23 @@ namespace WpfApp1Tech
 
 
                     }
-                    vecTech = new(maxUseWordTechCount);
-                    vecNoTech = new(maxUseWordNoTechCount);
+                    //vecTech = new(maxUseWordTechCount);
+                    //vecNoTech = new(maxUseWordNoTechCount);
+                    VecNoTech.Sort((y, x) => x.UsingTimes.CompareTo(y.UsingTimes));
+                    VecTech.Sort((y, x) => x.UsingTimes.CompareTo(y.UsingTimes));
 
-                    for (int i = 0; i < vec.Count; i++)
+                    //for (int i = 0; i < vec.Count; i++)
                     {
 
                       //  for (int j = 0; j < vec.At(i).VectorPerDate.Count; j++)
                         {
                        //     if (vec.At(i).VectorPerDate.At(j).Date == wayToDictionaryPath)
                             {
-                                if (vec.At(i).IsTech)
+                               // if (vec.At(i).IsTech)
                                 {
                          //           vecTech[vec.At(i).VectorPerDate.At(j).UsingTimes] = vec.At(i);
                                 }
-                                else
+                                //else
                                 {
                            //         vecNoTech[vec.At(i).VectorPerDate.At(j).UsingTimes] = vec.At(i);
                                 }

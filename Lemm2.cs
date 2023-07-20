@@ -39,9 +39,9 @@ namespace WpfApp1Tech
             string shortParsDate = wayToParsFolder[^10..];
 
             Settings settings = new();
-            TechDictionary test = new( 1, "софтстэк", 1, false);
-            Vector<TechDictionary>? vec = new(); //обьявление словаря
-            vec.PushBack(test);
+            TechDictionary test = new( new int[] {1}, "софтстэк", 1, false);
+            List<TechDictionary>? vec = new(); //обьявление словаря
+            vec.Add(test);
 
             JsonSerializer serializer = new()
             {
@@ -50,13 +50,14 @@ namespace WpfApp1Tech
 
             try // попытка присоединиться к существующему словарю
             {
-                if(File.Exists(System.IO.Path.Combine(wayToParsFolder, $"TechDictionary{shortParsDate}.json")))
+                string haveAdict = System.IO.Path.Combine(wayToParsFolder, $"TechDictionary {shortParsDate}.json");
+                if(File.Exists(haveAdict))
                 {
                     MessageBox.Show("Словарь доступен");
                 }
-                using var sr = new StreamReader(wayToParsFolder);//чтение потока из указанного файла
+                using var sr = new StreamReader(haveAdict);//чтение потока из указанного файла
                 using var jr = new JsonTextReader(sr);// валидауция например
-                vec = serializer.Deserialize<Vector<TechDictionary>>(jr);
+                vec = serializer.Deserialize<List<TechDictionary>>(jr);
                               
             }
             catch (Exception ex)
@@ -100,7 +101,7 @@ namespace WpfApp1Tech
 
                         for (int i = 0; i < vec.Count; i++)
                         {
-                            var needWord = vec.At(i);
+                            var needWord = vec[i];
                             if (needWord.IsTech)
                             {
                                 
@@ -110,11 +111,19 @@ namespace WpfApp1Tech
                                 if (index != -1)
                                 {
                                     //на этом этапе сразу прибавляем найденное знакомое слово-технологию 
-                                    vec.At(i).UsingTimes += 1;
+                                    vec[i].UsingTimes += 1;
+                                    //далее добавление ID текущей вакансии в массив айди всех найденых с этим словом вакансий
+                                    int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
+                                    for (int j = 0; j < vec[i].VacancyID.Length; j++)
+                                    {
+                                        newVacancyID[j] = vec[i].VacancyID[j];
+                                    }
+                                    newVacancyID[newVacancyID.Length - 1] = numOfVacancy;
+                                    vec[i].VacancyID = newVacancyID;
                                     do // Поиск всех повторений слова-технологии в тексте для подсветки
                                     {
                                         dicWordInFileTextIndicator[index] = index + needWord.Word.Length;// Диапозон нахождения слова в тексте
-                                        index = fileText.IndexOf(fileText, dicWordInFileTextIndicator[index]);
+                                        index = fileText.IndexOf(needWord.Word, dicWordInFileTextIndicator[index]);
 
                                     } while (index != -1);
                                 }
@@ -132,7 +141,7 @@ namespace WpfApp1Tech
 
                             if (dicWordInFileTextIndicator[wr] != 0)
                             {//собираем обычный текст до слова-технологии
-                                var vacancyRun = new Run(fileText.Substring(pointer, wr));
+                                var vacancyRun = new Run(fileText.Substring(pointer, wr - pointer));
                                 var techBold = new Bold(new Run(fileText[wr..dicWordInFileTextIndicator[wr]]));
                                 techBold.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFEEF5FD");
                                 //слово-технологию раскрашиваем цветным фоном and Bold to it.
@@ -142,10 +151,14 @@ namespace WpfApp1Tech
                                 // дополняем flowDocument для richTextBox и перетаскиваем pointer начала поиска технологий
                                 // для следующей иттерации цикла.
                                 pointer = dicWordInFileTextIndicator[wr];
+                                wr = pointer;
                             }
                         }
+                        //если слов-технологий в текущем тексте нет, выводим его в box полностью без изменений
                         if (pointer == 0) VacancyParagraph.Inlines.Add(new Run(fileText));
-                        //если слов-технологий в текущем тексте нет, выводим его в box полностью без изменений  
+                        else VacancyParagraph.Inlines.Add(new Run(fileText.Substring(pointer, fileText.Length - pointer)));
+                        //если слова-технологии были (pointer не нулевой) - остаток текста после последнего нахождения,
+                        //также выводим без изменений
 
                         VacancyFlowDoc.Blocks.Add(VacancyParagraph);
                         taskWindow.VacancyRichTextBox.Document = VacancyFlowDoc;
@@ -178,41 +191,56 @@ namespace WpfApp1Tech
 
 
                         //далее нахождение выделенных пользователем слов-технологий из текста в словаре
-                        var UseShortPathDate = new UseWordPerDate(shortParsDate, 1);
+                        var UseShortPathDate = new UseWordPerDate(shortParsDate, 1);//???
                         string[] NewTech = taskWindow.NewTech.Split(new char[] { '*' }, StringSplitOptions.RemoveEmptyEntries);
+                        
                         for (int i = 0; i < NewTech.Length; i++)
                         {
+                            NewTech[i] = NewTech[i].Trim();
                             //проходим по словарю и находим технологии
                             for (int j = 0; j < vec.Count; j++)
-                                if (vec.At(j).IsTech)
+                                if (vec[j].IsTech)
                                 {
                                     //если отмеченое слово уже есть, +1 использование.
-                                    if (NewTech[i] == vec.At(j).Word)
+                                    if (NewTech[i].ToLower() == vec[j].Word.ToLower())
                                     {
                                         NewTech[i] = "";//удаление из массива новонайденных
-                                        vec.At(j).UsingTimes += 1;                                        
+                                        vec[j].UsingTimes += 1;
+                                        //далее добавление ID текущей вакансии
+                                        //в массив айди всех найденых с этим словом вакансий
+                                        int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
+                                        for (int id = 0; id < vec[i].VacancyID.Length; id++)
+                                        {
+                                            newVacancyID[id] = vec[i].VacancyID[j];
+                                        }
+                                        newVacancyID[newVacancyID.Length - 1] = numOfVacancy;
+                                        vec[i].VacancyID = newVacancyID;
                                     }
                                 }
                             //если слова нет в словаре добавляем
-                            if (NewTech[i] != "")                                                       
-                            vec.PushBack(new(numOfVacancy, NewTech[i], 1, true));
+                            if (NewTech[i] != "")   
+                                
+                            vec.Add(new(new int[] { numOfVacancy }, NewTech[i], 1, true));
                         }
 
                         //блок записи всех слов не технологий и подсчет
-                        string textWithoultTech = fileText;
+                        string textWithoultTech = fileText.ToLower();
                         for (int i = 0; i < vec.Count; i++)
                         {
-                            var dicWord = vec.At(i);
+                            var dicWord = vec[i];
                             if (dicWord.IsTech)
                             {
                                 //если слово технология - удаляем, они уже подсчитаны в текущем тексте
-                                textWithoultTech.Replace($"{dicWord.Word}", "");
+                                textWithoultTech = textWithoultTech.Replace($"{dicWord.Word.ToLower()}", "");
                             }
                         }
 
                         //оставшиеся слова приводим к именительному падежу и далее сохраняем или прибавляем
-                        string[] words = textWithoultTech.Split(new char[] { ' ', ',', '.', ':', /*'-'*/'–', '—', '\r', '\n', '•', ';', '_', '?', '!', '"', '(', ')', '@', '%', '*', '`', '<', '|', '/', '>', '~', '+', '=' }, StringSplitOptions.RemoveEmptyEntries);
-                        var results = morph.Parse(words).ToArray();
+                        //string[] allWords = fileText.Split(new char[] { ' ', ',', '.', ':', /*'-'*/'–', '—', '\r', '\n', '•', ';', '_', '?', '!', '"', '(', ')', '@', '%', '*', '`', '<', '|', '/', '>', '~', '+', '=' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        string[] lowerWords = textWithoultTech.Split(new char[] { ' ', ',', '.', ':', '-','–', '—', '\r', '\n', '•', ';', '_', '?', '!', '"', '(', ')', '@', '%', '*', '`', '<', '|', '/', '>', '~', '+', '=' }, StringSplitOptions.RemoveEmptyEntries);
+                        
+                        var results = morph.Parse(lowerWords).ToArray();
 
 
                         //прогон слов текста на наличие в словаре 
@@ -221,24 +249,37 @@ namespace WpfApp1Tech
                             bool checkItsNew = true;// есть ли слово в словаре
                             string lem = results[w].BestTag.Lemma;
 
-                            for (int i = 0; i < vec.Count; i++)
+                            if (lem != null)
                             {
-                                var dicWord = vec.At(i);
+                                for (int i = 0; i < vec.Count; i++)
+                                {
+                                    var dicWord = vec[i];
 
-                                if (lem == dicWord.Word)
-                                {                                    
-                                    vec.At(i).UsingTimes += 1;
-                                    checkItsNew = false;                                  
+                                    if (lem.ToLower() == dicWord.Word.ToLower())
+                                    {
+                                        vec[i].UsingTimes += 1;
+                                        //далее добавление ID текущей вакансии
+                                        //в массив айди всех найденых с этим словом вакансий
+                                        int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
+                                        for (int j = 0; j < vec[i].VacancyID.Length; j++) 
+                                        { 
+                                            newVacancyID[j] = vec[i].VacancyID[j];
+                                        }
+                                        newVacancyID[newVacancyID.Length - 1] = numOfVacancy;
+                                        vec[i].VacancyID = newVacancyID;
+                                        checkItsNew = false;
+                                    }
+
                                 }
-
+                                /////////////////////////////////////////////////////////...////////
+                                if (checkItsNew)//слова в словаре не найдено
+                                {
+                                    //поднимаем первую букву,остальные опускаем и записываем в словарь.
+                                    string toUpperfChar = $"{Char.ToUpper(lem[0])}{lem[1..].ToLower()}";
+                                    TechDictionary word = new(new int[] { numOfVacancy }, toUpperfChar, 1, false);
+                                    vec.Add(word);
+                                }
                             }
-                            /////////////////////////////////////////////////////////...////////
-                            if (checkItsNew)//слова в словаре не найдено
-                            {
-                                TechDictionary word = new(numOfVacancy, lem, 1, false);
-                                vec.PushBack(word);
-                            }
-
                         }
 
                     }
@@ -265,7 +306,7 @@ namespace WpfApp1Tech
                     serializer.Serialize(jw, vec);
 
                 }
-
+                MessageBox.Show($"Словарь успешно создан в директории:/n/r{wayToParsFolder}");
             }
             else MessageBox.Show("количество доступных для обработки компаний равно нулю, или другая проблема директорий");
 

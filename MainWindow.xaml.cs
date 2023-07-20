@@ -133,15 +133,7 @@ namespace WpfApp1Tech
             }
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
-        {
-            Lemmizator1.Lemmization(DateOfList);
-            StartButton.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFE4FCDF");/*#3CACDC*/
-            var ip = new Interpreter();
-            ip.DicReview(DateOfList[0]);
-            TopTechResult.ItemsSource = ip.VecTech;
-            TopNoTechResult.ItemsSource = ip.VecNoTech;
-        }
+        
 
         private void SearchBox_Initialized(object sender, EventArgs e)
         {
@@ -235,17 +227,37 @@ namespace WpfApp1Tech
                 MessageBox.Show(ex.Message);
             }
         }
-
+        string way = "";
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Lemmizator lem = new()
+            
+            foreach (DateItem item in ParsDateList.SelectedItems)
             {
-                Owner = this
-            };
-            lem.ShowDialog();
-            Lemmizator.Lemmization(settings.ParsFolder);
-        }
+                MessageBox.Show(item.Title + "");
 
+                way = System.IO.Path.Combine(settings.ParsFolder, item.Title, $"TechDictionary {item.Title[^10..]}.json");
+
+                //Lemm2.Lemmization(way);
+                //items.Add(new DateItem(item.Title,item.Search,1));
+            }
+            var ip = new Interpreter(way);
+            //Interpreter.DicReview(way);
+            TopTechResult.ItemsSource = ip.VecTech;
+            TopNoTechResult.ItemsSource = ip.VecNoTech;
+
+        }
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            string[] selectedTech = new string[TopNoTechResult.SelectedItems.Count];
+            int count = 0;
+            foreach (TechDictionary item in TopNoTechResult.SelectedItems)
+            {
+                MessageBox.Show(item.Word + "");
+                selectedTech[count++] = item.Word;
+            }
+            var WH = new Worder(selectedTech, way);
+
+        }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             string[] Alls = Directory.GetDirectories(settings.ParsFolder);
