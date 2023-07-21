@@ -5,29 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1Tech"
         mc:Ignorable="d"
-        Title="Settings" Height="180" Width="670">
+        Title="Settings" Height="400" Width="670">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="40*"/>
-            <ColumnDefinition Width="27*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="27*"/>
-            <RowDefinition Height="31*"/>
-            <RowDefinition Height="43*"/>
-            <RowDefinition Height="38*"/>
-            <RowDefinition Height="25*"/>
+            <RowDefinition Height="29*"/>
+            <RowDefinition Height="65*"/>
+            <RowDefinition Height="45*"/>
+            <RowDefinition Height="190*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="15*"/>
         </Grid.RowDefinitions>
-        <Button x:Name="Viev" Click ="BtnOpenFolder_Click" Content="Обзор" HorizontalAlignment="Left" Margin="145,0,0,0" VerticalAlignment="Center" Background="#FFC6BABA" Height="25" Width="105" Grid.Row="1" Grid.Column="1"/>
-        <Label Content="Directory for Library of Parsing:" HorizontalAlignment="Left" Margin="16,0,0,0" VerticalAlignment="Center" Height="25" Width="174"/>
-        <TextBlock x:Name="TextBlock1" HorizontalAlignment="Left" Margin="26,0,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Initialized="TextBlock1_Initialized" Width="499" Height="24" Cursor="ArrowCD" FontWeight="Normal" FontStyle="Italic" TextDecorations="{x:Null}" Grid.Row="1" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="numberBox" HorizontalAlignment="Center" Margin="0,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="36" TextChanged="numberBox_TextChanged_1" PreviewTextInput="numberBox_PreviewTextInput_1" Text="none" IsEnabled="False" Height="23" Grid.Row="2" Grid.RowSpan="2" Initialized="numberBox_Initialized"/>
-        <Button x:Name="Oks" Content="Ok" Background="#FFC6BABA" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" Click="oks_Click" Height="26" Width="110" Grid.Row="3" Grid.Column="1"/>
-        <Button x:Name="Cans" Content="Cancel" Background="#FFC6BABA" HorizontalAlignment="Left" Margin="145,0,0,0" VerticalAlignment="Center" Height="26" Width="105" Click="Cans_Click" Grid.Row="3" Grid.Column="1"/>
-        <Label Content="Limit of Parsing:" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Height="26" Width="94" Margin="16,17,0,0"/>
-        <CheckBox x:Name="CheckLim" Content="Limit:" HorizontalAlignment="Left" Margin="120,24,0,0" VerticalAlignment="Top" Width="62" Height="15" Grid.Row="2" Checked="CheckLim_Checked" Unchecked="CheckLim_Unchecked" Initialized="CheckLim_Initialized"/>
-        <Label x:Name="Max" Content="(9999 max)" HorizontalAlignment="Left" Margin="225,19,0,0" VerticalAlignment="Top" Grid.Row="2" Height="29" Width="68" Grid.RowSpan="2" Visibility="Hidden"/>
-        <Grid/>
+        <Button x:Name="Viev" Click ="BtnOpenFolder_Click" Content="Обзор" HorizontalAlignment="Left" Margin="548,0,0,0" VerticalAlignment="Center" Background="#FFC6BABA" Height="25" Width="105" Grid.Row="1"/>
+        <Button x:Name="Oks" Content="Ok" Background="#FFC6BABA" HorizontalAlignment="Left" Margin="420,0,0,0" VerticalAlignment="Center" Click="oks_Click" Height="26" Width="110" Grid.Row="4"/>
+        <Button x:Name="Cans" Content="Cancel" Background="#FFC6BABA" HorizontalAlignment="Left" Margin="550,0,0,0" VerticalAlignment="Center" Height="26" Width="105" Click="Cans_Click" Grid.Row="4"/>
+        <GroupBox Header="Way data library" Grid.Row="1" Margin="10,10,135,10">
+            <StackPanel>
+                <TextBlock x:Name="TextBlock1" TextWrapping="Wrap" Text="TextBlock" Initialized="TextBlock1_Initialized" Width="499" Height="20" Cursor="ArrowCD" FontWeight="Normal" FontStyle="Italic" TextDecorations="{x:Null}" FontSize="13"/>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="GroupBox" Grid.Row="3" Margin="10,3,17,38" Grid.RowSpan="2" d:IsHidden="True">
+            <StackPanel Height="82">
+                <ScrollViewer Height="133"/>
+            </StackPanel>
+        </GroupBox>
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+            <Grid Width="100"/>
+            <Label Content="Limit of Parsing:" Height="26" Width="94"/>
+            <Label x:Name="Max" Content="(9999 max)" Height="29" Width="68" Visibility="Hidden"/>
+            <StackPanel Width="64" Orientation="Horizontal">
+                <CheckBox x:Name="CheckLim" Content="Limit:" Width="62" Height="25" Checked="CheckLim_Checked" Unchecked="CheckLim_Unchecked" Initialized="CheckLim_Initialized"/>
+
+            </StackPanel>
+            <TextBox x:Name="numberBox" TextWrapping="Wrap" Width="36" TextChanged="numberBox_TextChanged_1" PreviewTextInput="numberBox_PreviewTextInput_1" Text="none" IsEnabled="False" Height="23" Initialized="numberBox_Initialized"/>
+
+        </StackPanel>
 
     </Grid>
 </Window>

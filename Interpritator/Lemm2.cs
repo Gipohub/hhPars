@@ -11,7 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Xml.Linq;
 
-namespace WpfApp1Tech
+namespace WpfApp1Tech.Interpritator
 {
     internal class Lemm2
     {
@@ -28,7 +28,8 @@ namespace WpfApp1Tech
             //Lemmization();
         }
         public static void Lemmization(string[] waysToParsFolder)
-        { foreach(string wayToParsFolder in waysToParsFolder)
+        {
+            foreach (string wayToParsFolder in waysToParsFolder)
             {
                 Lemmization(wayToParsFolder);
             }
@@ -39,7 +40,7 @@ namespace WpfApp1Tech
             string shortParsDate = wayToParsFolder[^10..];
 
             Settings settings = new();
-            TechDictionary test = new( new int[] {1}, "софтстэк", 1, false);
+            TechDictionary test = new(new int[] { 1 }, "софтстэк", 1, false);
             List<TechDictionary>? vec = new(); //обьявление словаря
             vec.Add(test);
 
@@ -50,15 +51,15 @@ namespace WpfApp1Tech
 
             try // попытка присоединиться к существующему словарю
             {
-                string haveAdict = System.IO.Path.Combine(wayToParsFolder, $"TechDictionary {shortParsDate}.json");
-                if(File.Exists(haveAdict))
+                string haveAdict = Path.Combine(wayToParsFolder, $"TechDictionary {shortParsDate}.json");
+                if (File.Exists(haveAdict))
                 {
                     MessageBox.Show("Словарь доступен");
                 }
                 using var sr = new StreamReader(haveAdict);//чтение потока из указанного файла
                 using var jr = new JsonTextReader(sr);// валидауция например
                 vec = serializer.Deserialize<List<TechDictionary>>(jr);
-                              
+
             }
             catch (Exception ex)
             {
@@ -70,10 +71,10 @@ namespace WpfApp1Tech
             int numOfVacancy = 1;
             int comOfVacancy = 1;
 
-            
+
             //далее проходимся по всем найденым парсингом компаниям
-                string[] AllCompanyOfVacacy = Directory.GetDirectories(wayToParsFolder);
-                int directoryCount = AllCompanyOfVacacy.Length;
+            string[] AllCompanyOfVacacy = Directory.GetDirectories(wayToParsFolder);
+            int directoryCount = AllCompanyOfVacacy.Length;
 
             foreach (var CompanyOfVacancy in AllCompanyOfVacacy)
             {//в каждой конкретной компании
@@ -97,16 +98,16 @@ namespace WpfApp1Tech
 
                         //массив-индикатор слов-технологий для индикации их в тексте 
                         int[] dicWordInFileTextIndicator = new int[fileText.Length];
-                        
+
 
                         for (int i = 0; i < vec.Count; i++)
                         {
                             var needWord = vec[i];
                             if (needWord.IsTech)
                             {
-                                
+
                                 dic = string.Concat(needWord.Word.ToUpper(), "-", " [", needWord.UsingTimes, "]", "\n***\r", dic);
-                                   
+
                                 int index = fileText.IndexOf(needWord.Word);
                                 if (index != -1)
                                 {
@@ -168,12 +169,12 @@ namespace WpfApp1Tech
                         //рассчитываем примерный прогресс сбора словаря
 
                         taskWindow.ShowDialog();//отображается собранная таска с данными из файла и словаря
-                                
+
                         //НЕ ГОТОВО!!!!!!!!!!!!!!!! 
                         //ТРЕБУЕТСЯ БУЛЬ НА КАЖДОЙ ИТЕРАЦИИ КАЖДОГО ФОРЫЧА ИНАЧЕ КАСКАДНЫЙ БРИК
                         if (Stop)
                         {
-                            string saveStopDicName = System.IO.Path.Combine(wayToParsFolder, $"TechDict {shortParsDate}({numOfVacancy}VacCount).json");
+                            string saveStopDicName = Path.Combine(wayToParsFolder, $"TechDict {shortParsDate}({numOfVacancy}VacCount).json");
 
                             serializer = new JsonSerializer();
                             serializer.Formatting = Formatting.Indented;
@@ -193,7 +194,7 @@ namespace WpfApp1Tech
                         //далее нахождение выделенных пользователем слов-технологий из текста в словаре
                         var UseShortPathDate = new UseWordPerDate(shortParsDate, 1);//???
                         string[] NewTech = taskWindow.NewTech.Split(new char[] { '*' }, StringSplitOptions.RemoveEmptyEntries);
-                        
+
                         for (int i = 0; i < NewTech.Length; i++)
                         {
                             NewTech[i] = NewTech[i].Trim();
@@ -218,9 +219,9 @@ namespace WpfApp1Tech
                                     }
                                 }
                             //если слова нет в словаре добавляем
-                            if (NewTech[i] != "")   
-                                
-                            vec.Add(new(new int[] { numOfVacancy }, NewTech[i], 1, true));
+                            if (NewTech[i] != "")
+
+                                vec.Add(new(new int[] { numOfVacancy }, NewTech[i], 1, true));
                         }
 
                         //блок записи всех слов не технологий и подсчет
@@ -238,14 +239,14 @@ namespace WpfApp1Tech
                         //оставшиеся слова приводим к именительному падежу и далее сохраняем или прибавляем
                         //string[] allWords = fileText.Split(new char[] { ' ', ',', '.', ':', /*'-'*/'–', '—', '\r', '\n', '•', ';', '_', '?', '!', '"', '(', ')', '@', '%', '*', '`', '<', '|', '/', '>', '~', '+', '=' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        string[] lowerWords = textWithoultTech.Split(new char[] { ' ', ',', '.', ':', '-','–', '—', '\r', '\n', '•', ';', '_', '?', '!', '"', '(', ')', '@', '%', '*', '`', '<', '|', '/', '>', '~', '+', '=' }, StringSplitOptions.RemoveEmptyEntries);
-                        
+                        string[] lowerWords = textWithoultTech.Split(new char[] { ' ', ',', '.', ':', '-', '–', '—', '\r', '\n', '•', ';', '_', '?', '!', '"', '(', ')', '@', '%', '*', '`', '<', '|', '/', '>', '~', '+', '=' }, StringSplitOptions.RemoveEmptyEntries);
+
                         var results = morph.Parse(lowerWords).ToArray();
 
 
                         //прогон слов текста на наличие в словаре 
                         for (int w = 0; w < results.Length; w++)
-                        {                           
+                        {
                             bool checkItsNew = true;// есть ли слово в словаре
                             string lem = results[w].BestTag.Lemma;
 
@@ -261,8 +262,8 @@ namespace WpfApp1Tech
                                         //далее добавление ID текущей вакансии
                                         //в массив айди всех найденых с этим словом вакансий
                                         int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
-                                        for (int j = 0; j < vec[i].VacancyID.Length; j++) 
-                                        { 
+                                        for (int j = 0; j < vec[i].VacancyID.Length; j++)
+                                        {
                                             newVacancyID[j] = vec[i].VacancyID[j];
                                         }
                                         newVacancyID[newVacancyID.Length - 1] = numOfVacancy;
@@ -275,7 +276,7 @@ namespace WpfApp1Tech
                                 if (checkItsNew)//слова в словаре не найдено
                                 {
                                     //поднимаем первую букву,остальные опускаем и записываем в словарь.
-                                    string toUpperfChar = $"{Char.ToUpper(lem[0])}{lem[1..].ToLower()}";
+                                    string toUpperfChar = $"{char.ToUpper(lem[0])}{lem[1..].ToLower()}";
                                     TechDictionary word = new(new int[] { numOfVacancy }, toUpperfChar, 1, false);
                                     vec.Add(word);
                                 }
@@ -285,7 +286,7 @@ namespace WpfApp1Tech
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "текстовый файл не был обработан");                        
+                        MessageBox.Show(ex.Message, "текстовый файл не был обработан");
                     }
                     numOfVacancy += 1;//счетчик подсчета уникальных вакансий
                 }
@@ -294,7 +295,7 @@ namespace WpfApp1Tech
 
             if (directoryCount > 0)
             {
-                string saveName = System.IO.Path.Combine(wayToParsFolder, $"TechDictionary {shortParsDate}.json");
+                string saveName = Path.Combine(wayToParsFolder, $"TechDictionary {shortParsDate}.json");
 
                 serializer = new JsonSerializer();
                 serializer.Formatting = Formatting.Indented;
@@ -316,10 +317,10 @@ namespace WpfApp1Tech
 
         }
     }
-    
+
 }
 //if (check == 0)
-                                //{
+//{
 
 //taskWindow.Show();
 

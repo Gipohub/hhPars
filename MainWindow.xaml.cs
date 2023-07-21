@@ -16,7 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WindowsAPICodePack;
 using WindowsAPICodePack.Dialogs;
-using WpfApp1Tech;
+using WpfApp1Tech.Interpritator;
 
 namespace WpfApp1Tech
 {
@@ -250,12 +250,15 @@ namespace WpfApp1Tech
         {
             string[] selectedTech = new string[TopNoTechResult.SelectedItems.Count];
             int count = 0;
+            List<TechDictionary> selectedWord = new();
             foreach (TechDictionary item in TopNoTechResult.SelectedItems)
             {
                 MessageBox.Show(item.Word + "");
-                selectedTech[count++] = item.Word;
+                selectedWord.Add(item);
             }
-            var WH = new Worder(selectedTech, way);
+
+            var WH = new Worder(selectedWord/*, way*/);
+            ListTechResult.ItemsSource = WH.pairs;
 
         }
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -263,6 +266,10 @@ namespace WpfApp1Tech
             string[] Alls = Directory.GetDirectories(settings.ParsFolder);
             Lemm2.Lemmization(Alls);
         }
-       
+
+        private void BtnSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

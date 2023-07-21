@@ -8,7 +8,7 @@ using System.Windows;
 using Newtonsoft.Json;
 using static WpfApp1Tech.MainWindow;
 
-namespace WpfApp1Tech
+namespace WpfApp1Tech.Interpritator
 {
     internal class Interpreter
     {
@@ -29,11 +29,11 @@ namespace WpfApp1Tech
             {
 
 
-                
+
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.NullValueHandling = NullValueHandling.Ignore;
                 List<TechDictionary>? vec = new(); //обьявление словаря
-                
+
                 try
                 {
 
@@ -63,11 +63,11 @@ namespace WpfApp1Tech
 
                         //for (int j = 0; j < vec.At(i).VectorPerDate.Count; j++)
                         {
-                          //  if (vec.At(i).VectorPerDate.At(j).Date == wayToDictionaryPath)
+                            //  if (vec.At(i).VectorPerDate.At(j).Date == wayToDictionaryPath)
                             {
                                 if (vec[i].IsTech)
                                 {
-                                    this.VecTech.Add(vec[i]);
+                                    VecTech.Add(vec[i]);
                                     //     if (vec.At(i).VectorPerDate.At(j).UsingTimes > maxUseWordTechCount)
                                     {
                                         //         maxUseWordTechCount = vec.At(i).VectorPerDate.At(j).UsingTimes;
@@ -75,9 +75,9 @@ namespace WpfApp1Tech
                                 }
                                 else
                                 {
-                               //     if (vec.At(i).VectorPerDate.At(j).UsingTimes > maxUseWordNoTechCount)
+                                    //     if (vec.At(i).VectorPerDate.At(j).UsingTimes > maxUseWordNoTechCount)
                                     {
-                                        this.VecNoTech.Add(vec[i]);
+                                        VecNoTech.Add(vec[i]);
                                         //          maxUseWordTechCount = vec.At(i).VectorPerDate.At(j).UsingTimes;
                                     }
                                 }
@@ -94,17 +94,17 @@ namespace WpfApp1Tech
                     //for (int i = 0; i < vec.Count; i++)
                     {
 
-                      //  for (int j = 0; j < vec.At(i).VectorPerDate.Count; j++)
+                        //  for (int j = 0; j < vec.At(i).VectorPerDate.Count; j++)
                         {
-                       //     if (vec.At(i).VectorPerDate.At(j).Date == wayToDictionaryPath)
+                            //     if (vec.At(i).VectorPerDate.At(j).Date == wayToDictionaryPath)
                             {
-                               // if (vec.At(i).IsTech)
+                                // if (vec.At(i).IsTech)
                                 {
-                         //           vecTech[vec.At(i).VectorPerDate.At(j).UsingTimes] = vec.At(i);
+                                    //           vecTech[vec.At(i).VectorPerDate.At(j).UsingTimes] = vec.At(i);
                                 }
                                 //else
                                 {
-                           //         vecNoTech[vec.At(i).VectorPerDate.At(j).UsingTimes] = vec.At(i);
+                                    //         vecNoTech[vec.At(i).VectorPerDate.At(j).UsingTimes] = vec.At(i);
                                 }
                             }
                         }

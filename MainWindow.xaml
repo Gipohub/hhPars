@@ -60,7 +60,7 @@
         </Grid>
         <Button x:Name="StartButton" Content="ButtonToStart" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="15,1,1,1" FontFamily="Arial Black" Height="50" Width="102" Grid.Row="3" Click="StartButton_Click" Margin="444,63,0,0" Grid.Column="1" Grid.RowSpan="2"/>
         <Expander Expanded="Expander_Expanded" Collapsed="Expander_Collapsed" Margin="595,70,0,43" HorizontalAlignment="Left" Width="242" BorderThickness="1,1,1,1" Grid.Column="1" Header="1" Grid.RowSpan="2" Grid.Row="1"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="299,97,0,0" VerticalAlignment="Top" Height="49" Width="64" Grid.Column="1"/>
+        <Button x:Name="BtnSearch" Content="Search" HorizontalAlignment="Left" Margin="299,97,0,0" VerticalAlignment="Top" Height="49" Width="64" Grid.Column="1" Click="BtnSearch_Click"/>
         <Button Click ="ButtonSettings_Click" Content="Settings" HorizontalAlignment="Left" Margin="863,20,0,0" VerticalAlignment="Top" Width="60" Height="26" Grid.Column="1"/>
         <Button x:Name="ButtonHoldList" Content="захолдить" HorizontalAlignment="Center" Margin="0,97,0,0" VerticalAlignment="Top" Height="46" Width="102" IsEnabled="False" Click="ButtonHoldList_Click" Grid.Column="1"/>
         <ListBox x:Name="ParsDateList" HorizontalContentAlignment="Stretch" Margin="114,113,0,206" SelectionMode="Multiple" HorizontalAlignment="Left" Width="972" Grid.ColumnSpan="2" Grid.RowSpan="3">
@@ -81,10 +81,10 @@
         </ListBox>
         <Button x:Name="interBtn" Content="Interpreter" HorizontalAlignment="Left" Margin="13,33,0,0" Grid.Row="2" VerticalAlignment="Top" Height="50" Width="130" Click="Button_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="150,32,0,0" TextWrapping="Wrap" Text="{}{ |Parser| |Saver| |Interpritator| }" VerticalAlignment="Top" Grid.Row="4" Width="340" Height="33" FontSize="24" Grid.Column="1"/>
-        <TextBlock x:Name="ShortTextResult" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="144" Width="146" FontSize="8" RenderTransformOrigin="0.5,0.5" Margin="584,106,0,0" Grid.RowSpan="3">
+        <TextBlock x:Name="ShortTextResult" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="186" Width="324" FontSize="8" RenderTransformOrigin="0.5,0.5" Margin="532,49,0,0" Grid.Row="2" Grid.RowSpan="2">
             <TextBlock.RenderTransform>
                 <TransformGroup>
-                    <ScaleTransform ScaleX="-1"/>
+                    <ScaleTransform ScaleX="1"/>
                     <SkewTransform/>
                     <RotateTransform/>
                     <TranslateTransform/>
@@ -104,13 +104,12 @@
                 <DataTemplate>
                     <Grid Margin="0,2">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="98"/>
-                            <ColumnDefinition Width="45"/>
-                            <ColumnDefinition />
-
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Word}" Margin="3,0,0,0" HorizontalAlignment="Left" Width="85"/>
-                        <TextBlock Text="{Binding UsingTimes}" Grid.Column="2"/>
+                        <TextBlock Text="{Binding StringFormat=1}" />
+                        <TextBlock Text="{}" Grid.Column="2"/>
+
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
