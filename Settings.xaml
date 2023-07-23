@@ -5,42 +5,94 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1Tech"
         mc:Ignorable="d"
-        Title="Settings" Height="400" Width="670">
-    <Grid>
+        Title="Settings" Height="335" Width="Auto" d:DesignWidth="645" ResizeMode="CanResizeWithGrip">
+    <Grid ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="0,0,0,-1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="29*"/>
-            <RowDefinition Height="65*"/>
-            <RowDefinition Height="45*"/>
-            <RowDefinition Height="190*"/>
-            <RowDefinition Height="40*"/>
-            <RowDefinition Height="15*"/>
+
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Button x:Name="Viev" Click ="BtnOpenFolder_Click" Content="Обзор" HorizontalAlignment="Left" Margin="548,0,0,0" VerticalAlignment="Center" Background="#FFC6BABA" Height="25" Width="105" Grid.Row="1"/>
-        <Button x:Name="Oks" Content="Ok" Background="#FFC6BABA" HorizontalAlignment="Left" Margin="420,0,0,0" VerticalAlignment="Center" Click="oks_Click" Height="26" Width="110" Grid.Row="4"/>
-        <Button x:Name="Cans" Content="Cancel" Background="#FFC6BABA" HorizontalAlignment="Left" Margin="550,0,0,0" VerticalAlignment="Center" Height="26" Width="105" Click="Cans_Click" Grid.Row="4"/>
-        <GroupBox Header="Way data library" Grid.Row="1" Margin="10,10,135,10">
-            <StackPanel>
-                <TextBlock x:Name="TextBlock1" TextWrapping="Wrap" Text="TextBlock" Initialized="TextBlock1_Initialized" Width="499" Height="20" Cursor="ArrowCD" FontWeight="Normal" FontStyle="Italic" TextDecorations="{x:Null}" FontSize="13"/>
-            </StackPanel>
-        </GroupBox>
-        <GroupBox Header="GroupBox" Grid.Row="3" Margin="10,3,17,38" Grid.RowSpan="2" d:IsHidden="True">
-            <StackPanel Height="82">
-                <ScrollViewer Height="133"/>
-            </StackPanel>
-        </GroupBox>
-        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" Margin="0,0,11,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <GroupBox Header="Way data library" Height="45" Width="525">
+                <StackPanel d:IsLocked="True">
+                    <TextBlock x:Name="TextBlock1" TextWrapping="Wrap" Text="TextBlock" Initialized="TextBlock1_Initialized" Width="499" Height="20" Cursor="ArrowCD" FontWeight="Normal" FontStyle="Italic" TextDecorations="{x:Null}" FontSize="13" d:IsLocked="True"/>
+                </StackPanel>
+            </GroupBox>
+            <Button x:Name="Viev" Click ="BtnOpenFolder_Click" Content="Обзор" Background="#FFC6BABA" Height="25" Width="97" Margin="0,0,0,-8"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" d:IsLocked="True">
             <Grid Width="100"/>
-            <Label Content="Limit of Parsing:" Height="26" Width="94"/>
-            <Label x:Name="Max" Content="(9999 max)" Height="29" Width="68" Visibility="Hidden"/>
-            <StackPanel Width="64" Orientation="Horizontal">
-                <CheckBox x:Name="CheckLim" Content="Limit:" Width="62" Height="25" Checked="CheckLim_Checked" Unchecked="CheckLim_Unchecked" Initialized="CheckLim_Initialized"/>
+            <StackPanel Width="282" Orientation="Horizontal">
+                <Label Content="Limit of Parsing:" Height="29" Width="99" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+
+                <CheckBox x:Name="CheckLim" Content="" Checked="CheckLim_Checked" Unchecked="CheckLim_Unchecked" Initialized="CheckLim_Initialized" VerticalAlignment="Center" Margin="0,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="29"/>
+                <TextBox x:Name="numberBox" TextWrapping="Wrap" TextChanged="numberBox_TextChanged_1" PreviewTextInput="numberBox_PreviewTextInput_1" Text="none" IsEnabled="False" Initialized="numberBox_Initialized" FontSize="14" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="29" Width="85"/>
+                <Label x:Name="Max" Content="(9999 max)" Height="29" Width="68" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
             </StackPanel>
-            <TextBox x:Name="numberBox" TextWrapping="Wrap" Width="36" TextChanged="numberBox_TextChanged_1" PreviewTextInput="numberBox_PreviewTextInput_1" Text="none" IsEnabled="False" Height="23" Initialized="numberBox_Initialized"/>
 
+        </StackPanel>
+        <GroupBox Header="Detal settings of parser" Grid.Row="2" Margin="0,0,0,0">
+            <ScrollViewer Height="140" Margin="0,0,19,0">
+                <StackPanel Height="208">
+                    <StackPanel Height="30" Orientation="Horizontal">
+                        <TextBlock TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Run Text="Элемент"/>
+                        <Run Text="строки" FontWeight="Bold"/>
+                        <Run Text="поиска.XPath :"/>
+                        </TextBlock>
+                        <Grid Width="7"/>
+                        <TextBox x:Name="SearchStringBox" TextWrapping="Wrap" Width="545" Height="18"/>
+                    </StackPanel>
+                    <StackPanel Height="30" Orientation="Horizontal">
+                        <TextBlock TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Run Text="Элемент"/>
+                            <Run Text="кнопки" FontWeight="Bold"/>
+                            <Run Text="поиска.XPath :"/>
+                            </TextBlock>
+                        <Grid Width="7"/>
+                        <TextBox x:Name="SearchButtonBox" TextWrapping="Wrap" Width="545" Height="18"/>
+                    </StackPanel>
+                    <StackPanel Height="50" Orientation="Horizontal">
+                        <TextBlock TextWrapping="Wrap" Width="200" Text="Ориентир для поиска всех заголовков вакансий на странице.CssSelector :" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Grid Width="7"/>
+                        <TextBox TextWrapping="Wrap" Width="545" Height="18"/>
+                    </StackPanel>
+                    <StackPanel Height="30" Orientation="Horizontal">
+                        <TextBlock TextWrapping="Wrap" Text="Элемент строки поиска.XPath:" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Grid Width="7"/>
+                        <TextBox TextWrapping="Wrap" Width="545" Height="18"/>
+                    </StackPanel>
+                    <StackPanel Height="30" Orientation="Horizontal">
+                        <TextBlock TextWrapping="Wrap" Text="Элемент строки поиска.XPath:" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Grid Width="7"/>
+                        <TextBox TextWrapping="Wrap" Width="545" Height="18"/>
+                    </StackPanel>
+                    <StackPanel Height="30" Orientation="Horizontal">
+                        <TextBlock TextWrapping="Wrap" Text="Элемент строки поиска.XPath:" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Grid Width="7"/>
+                        <TextBox TextWrapping="Wrap" Width="545" Height="18"/>
+                    </StackPanel>
+                    <StackPanel Height="30" Orientation="Horizontal">
+                        <TextBlock TextWrapping="Wrap" Text="Элемент строки поиска.XPath:" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Grid Width="7"/>
+                        <TextBox TextWrapping="Wrap" Width="545" Height="18"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </GroupBox>
+        <StackPanel Grid.Row="3" Margin="0,11,189,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Right" Width="266" d:IsLocked="True">
+            <StackPanel Orientation="Horizontal" Width="266">
+                <Button x:Name="Oks" Content="Ok" Background="#FFC6BABA" Click="oks_Click" Height="26" Width="110"/>
+                <Grid Width="50"/>
+                <Button x:Name="Cans" Content="Cancel" Background="#FFC6BABA" Height="26" Width="105" Click="Cans_Click"/>
+
+            </StackPanel>
         </StackPanel>
 
     </Grid>

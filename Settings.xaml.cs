@@ -54,6 +54,16 @@ namespace WpfApp1Tech
         public string ParsFolder { get; set; } = @"C:\Users\Professional\Documents\Visual Studio 2022\hhPars\";
         public int LimitOfVacancyPars { get; set; } = 0;
         public string LastReqest { get; set; } = @"C#";
+        public string DayToday { get; set; } = DateTime.Today.ToString()[..^8];
+        // далее указатели для Selenium драйвера
+        public string SearchBoxPointer { get; set; }
+        public string SearchButtonPointer { get; set; }
+        public string LinkToFullVacancyPointer { get; set; }
+        public string ShortVacancyPointer { get; set; }
+        public string NameOfVacancyPointer { get; set; }
+        public string NameOfCompanyPointer { get; set; }
+        public string CityOfVacancyPointer { get; set; }
+        public string TextOfVacancyPointer { get; set; }
 
         public Settings()
         {
