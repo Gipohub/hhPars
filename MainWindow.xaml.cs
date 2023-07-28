@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using WindowsAPICodePack;
 using WindowsAPICodePack.Dialogs;
 using WpfApp1Tech.Interpritator;
+using WpfApp1Tech.Parser;
 
 namespace WpfApp1Tech
 {
@@ -71,13 +72,7 @@ namespace WpfApp1Tech
             //MessageBox.Show("Экспандер свернут");
             ((Expander)sender).Content = new Button() { Width = 80, Height = 30, Content = "Привет" };
 
-        }
-
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-       
+        }            
 
         public class DateItem
         {
@@ -139,7 +134,7 @@ namespace WpfApp1Tech
         {
             string[] allfolders = Directory.GetDirectories(settings.ParsFolder);
             //IEnumerable<string> allfiles = Directory.EnumerateFiles(Settings.ssDef.ParsFolder);
-            int length = settings.ParsFolder.Length + 1;
+            int length = settings.ParsFolder.Length;
             for (int i = 0; i < allfolders.Length; i++)
                 {
                 allfolders[i] = allfolders[i].Remove(0,length);
@@ -190,26 +185,29 @@ namespace WpfApp1Tech
                 if (SearchBox.SelectedValue != null)
                 {
                     SearchBox.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString("#3CACDC");/*#FFE4FCDF*/
-                    string? kek = SearchBox.SelectedValue.ToString();
-                    string parsdate = System.IO.Path.Combine(settings.ParsFolder, kek);
+                    string? sbsv = SearchBox.SelectedValue.ToString();
+                    string parsdate = System.IO.Path.Combine(settings.ParsFolder, sbsv);
                     string[] shortFolders = Directory.GetDirectories(parsdate);
                     //  string[] allFolders = shortFolders;
                     DateOfList = shortFolders;
-                    int length = settings.ParsFolder.Length + 1;
+                    int length = settings.ParsFolder.Length;
                     for (int i = 0; i < shortFolders.Length; i++)
                     {
                     //  shortFolders[i].Remove(0, length);
                     }
                     if (shortFolders.Length == 0)
                     {
-                        ParsDateList.ItemsSource = "Подобных поисков не было";
+                        List<DateItem> items = new List<DateItem>();
+                        items.Add(new("Подобных поисков не было","" , 0));
+
+                        ParsDateList.ItemsSource = items;
                     }
                     else
                     {
                         List<DateItem> items = new List<DateItem>();
                         for (int i = 0; i < shortFolders.Length; i++)
                         {
-                            items.Add(new DateItem(shortFolders[i].Remove(0, length), kek, i));
+                            items.Add(new DateItem(shortFolders[i].Remove(0, length), sbsv, i));
                         }
 
 
@@ -269,7 +267,16 @@ namespace WpfApp1Tech
 
         private void BtnSearch_Click(object sender, RoutedEventArgs e)
         {
+            if (SearchBox.SelectedValue != null)
+            {
+                SearchBox.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFE4FCDF");
+                string? sbsv = SearchBox.SelectedValue.ToString();
 
+                int sp = new SeleniumParser(sbsv).iterationPars;
+                MessageBox.Show($"Проведён парсинг {sp} вакансий", "Завершение парсинга");
+                SearchBox.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString("#3CACDC");
+            }
+            else MessageBox.Show("Выберите запрос", "Ошибка парсинга");
         }
     }
 }

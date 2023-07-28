@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WpfApp1Tech
 {
-    public class VacancyData
+    public class VacancyData1
     {
         public string NameOfCompany { get; set; }
         public int Count { get; set; }
@@ -14,7 +14,7 @@ namespace WpfApp1Tech
         public string Herf { get; set; }
         public string CityOfCompany { get; set; }
         public string Description { get; set; }
-        public VacancyData(int companyId, string nameOfCompany, string titleOfVacancy, string vacancyHerf, string cityOfCompany, string textOfVacancy)
+        public VacancyData1(int companyId, string nameOfCompany, string titleOfVacancy, string vacancyHerf, string cityOfCompany, string textOfVacancy)
         {
             NameOfCompany = nameOfCompany;
             Count = companyId;
