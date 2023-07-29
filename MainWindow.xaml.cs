@@ -99,7 +99,7 @@ namespace WpfApp1Tech
                 //ParsDateList.BorderBrush = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFE4FCDF");/*#3CACDC*/
                 //var l = ParsDateList.SelectedItems;
                 //dynamic[] Booth = ParsDateList.SelectedItem as dynamic;
-               // List<DateItem> items = new List<DateItem>();
+                List<DateItem> items = new List<DateItem>();
                 foreach (DateItem item in ParsDateList.SelectedItems)
                 {
                     MessageBox.Show(item.Title + "");
@@ -107,7 +107,7 @@ namespace WpfApp1Tech
                     var way = System.IO.Path.Combine(settings.ParsFolder, item.Title);
                     
                     Lemm2.Lemmization(way);
-                    //items.Add(new DateItem(item.Title,item.Search,1));
+                    items.Add(new DateItem(item.Title,item.Search,1));
                 }
                 //ListTechResult.ItemsSource = items;
                 //ShortTextResult.Text.Add() = Booth.Search;
@@ -188,13 +188,19 @@ namespace WpfApp1Tech
                     string? sbsv = SearchBox.SelectedValue.ToString();
                     string parsdate = System.IO.Path.Combine(settings.ParsFolder, sbsv);
                     string[] shortFolders = Directory.GetDirectories(parsdate);
-                    //  string[] allFolders = shortFolders;
-                    DateOfList = shortFolders;
                     int length = settings.ParsFolder.Length;
-                    for (int i = 0; i < shortFolders.Length; i++)
-                    {
+
+                    
+                    
+                    //  string[] allFolders = shortFolders;
+
+
+                    DateOfList = shortFolders;
+                    
+                    //for (int i = 0; i < shortFolders.Length; i++)
+                   // {
                     //  shortFolders[i].Remove(0, length);
-                    }
+                    //}
                     if (shortFolders.Length == 0)
                     {
                         List<DateItem> items = new List<DateItem>();
@@ -205,9 +211,35 @@ namespace WpfApp1Tech
                     else
                     {
                         List<DateItem> items = new List<DateItem>();
-                        for (int i = 0; i < shortFolders.Length; i++)
+                        int haveADic;
+
+                        foreach (string shortFolder in shortFolders)
                         {
-                            items.Add(new DateItem(shortFolders[i].Remove(0, length), sbsv, i));
+                            //var dicPath = System.IO.Path.Combine(parsdate, shortFolder.Remove(0, length));
+                            var dicName = Directory.GetFiles(shortFolder, "*.json");
+                            if (dicName.Length > 0)
+                            {
+                                //последний элемент массива и его последние 8 символов
+                                var dicItem = dicName[^1][^7..^5];
+                                //dicItem = dicItem[^3..];
+                                if(int.TryParse(dicItem, out int result))
+                                {
+                                    items.Add(new DateItem(shortFolder.Remove(0, length), sbsv, result));
+                                }
+                                else
+                                {
+                                    items.Add(new DateItem(shortFolder.Remove(0, length), sbsv, 0));
+
+                                }
+                            }
+                            else
+                            {
+                                items.Add(new DateItem(shortFolder.Remove(0, length), sbsv, 0));
+                            }
+                        }
+                        //for (int i = 0; i < shortFolders.Length; i++)
+                        {
+                        //    items.Add(new DateItem(shortFolders[i].Remove(0, length), sbsv, i));
                         }
 
 
@@ -229,19 +261,7 @@ namespace WpfApp1Tech
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             
-            foreach (DateItem item in ParsDateList.SelectedItems)
-            {
-                MessageBox.Show(item.Title + "");
-
-                way = System.IO.Path.Combine(settings.ParsFolder, item.Title, $"TechDictionary {item.Title[^10..]}.json");
-
-                //Lemm2.Lemmization(way);
-                //items.Add(new DateItem(item.Title,item.Search,1));
-            }
-            var ip = new Interpreter(way);
-            //Interpreter.DicReview(way);
-            TopTechResult.ItemsSource = ip.VecTech;
-            TopNoTechResult.ItemsSource = ip.VecNoTech;
+            
 
         }
         private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -277,6 +297,28 @@ namespace WpfApp1Tech
                 SearchBox.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString("#3CACDC");
             }
             else MessageBox.Show("Выберите запрос", "Ошибка парсинга");
+        }
+
+        private void ParsDateList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ParsDateList.SelectedItems.Count > 1) 
+            {
+                //не настроено на множество
+            }
+            foreach (DateItem item in ParsDateList.SelectedItems)
+            {
+                if(item.CountOfFiles > 0)
+                {
+                    way = System.IO.Path.Combine(settings.ParsFolder, item.Title, $"TechDictionary {item.Title[^10..]}.{item.CountOfFiles}.json");
+                    var ip = new Interpreter(way);
+                    
+
+                    TopTechResult.ItemsSource = ip.VecTech;
+                    TopNoTechResult.ItemsSource = ip.VecNoTech;
+                }
+                
+            }
+            
         }
     }
 }

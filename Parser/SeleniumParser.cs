@@ -60,7 +60,7 @@ namespace WpfApp1Tech.Parser
                 }
                 catch
                 {
-                    driver.Close();
+                    //driver.Close();
                     driver = new ChromeDriver();
                     continue;
                 }

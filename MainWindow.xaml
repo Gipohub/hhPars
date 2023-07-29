@@ -57,11 +57,11 @@
 
         </TabControl>
         <Button x:Name="StartButton" Content="ButtonToStart" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="15,1,1,1" FontFamily="Arial Black" Height="20" Width="112" Grid.Row="2" Click="StartButton_Click" Margin="55,33,0,0" Grid.Column="1"/>
-        <Expander Expanded="Expander_Expanded" Collapsed="Expander_Collapsed" Margin="333,49,0,138" HorizontalAlignment="Left" Width="270" BorderThickness="1,1,1,1" Grid.Column="1" Header="1" Grid.Row="2"/>
+        <Expander Expanded="Expander_Expanded" Collapsed="Expander_Collapsed" Margin="193,25,0,162" HorizontalAlignment="Left" Width="270" BorderThickness="1,1,1,1" Grid.Column="1" Header="1" Grid.Row="2"/>
         <Button x:Name="BtnSearch" Content="Search" HorizontalAlignment="Left" Margin="299,97,0,0" VerticalAlignment="Top" Height="49" Width="64" Grid.Column="1" Click="BtnSearch_Click"/>
         <Button Click ="ButtonSettings_Click" Content="Settings" HorizontalAlignment="Left" Margin="863,20,0,0" VerticalAlignment="Top" Width="60" Height="26" Grid.Column="1"/>
         <Button x:Name="ButtonHoldList" Content="захолдить" HorizontalAlignment="Center" Margin="0,97,0,0" VerticalAlignment="Top" Height="46" Width="102" IsEnabled="False" Click="ButtonHoldList_Click" Grid.Column="1"/>
-        <ListBox x:Name="ParsDateList" HorizontalContentAlignment="Stretch" Margin="114,113,0,206" SelectionMode="Multiple" HorizontalAlignment="Left" Width="972" Grid.ColumnSpan="2" Grid.RowSpan="3">
+        <ListBox x:Name="ParsDateList" HorizontalContentAlignment="Stretch" Margin="114,113,0,206" SelectionMode="Extended" HorizontalAlignment="Left" Width="972" Grid.ColumnSpan="2" Grid.RowSpan="3" SelectionChanged="ParsDateList_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,1">
@@ -71,7 +71,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding Title}" />
                         <TextBlock Text="{Binding Title}" />
-                        <ProgressBar Grid.Column="1" Minimum="0" Maximum="10" Value="{Binding CountOfFiles}" />
+                        <ProgressBar Grid.Column="1" Minimum="0" Maximum="99" Value="{Binding CountOfFiles}" />
                         <TextBlock Text="{Binding Title}" />
                     </Grid>
                 </DataTemplate>
@@ -86,7 +86,7 @@
                 </LinearGradientBrush>
             </ComboBox.Background>
         </ComboBox>
-        <ListBox x:Name="ListTechResult" Grid.Column="1" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionMode="Multiple" Margin="55,58,666,22" Grid.RowSpan="3" Grid.Row="2">
+        <ListBox x:Name="ListTechResult" Grid.Column="1" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionMode="Multiple" Margin="55,58,520,22" Grid.RowSpan="3" Grid.Row="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,2">
@@ -104,7 +104,7 @@
         <Button Content="Button" HorizontalAlignment="Left" Margin="791,63,0,0" Grid.Row="3" VerticalAlignment="Top" Height="50" Width="130" Grid.Column="1" Grid.RowSpan="2"/>
         <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="711,27,0,0" Grid.Row="4" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
         <Button Content="Button" HorizontalAlignment="Left" Margin="13,10,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
-        <Grid Grid.Column="1" Grid.Row="2" Margin="345,33,0,47" Grid.RowSpan="3">
+        <Grid Grid.Column="1" Grid.Row="2" Margin="468,33,0,47" Grid.RowSpan="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="37*"/>
                 <RowDefinition Height="50*"/>
@@ -124,6 +124,7 @@
                 </TextBlock.RenderTransform>
             </TextBlock>
         </Grid>
+        <Button Grid.Column="1" Content="Button" HorizontalAlignment="Left" Margin="453,43,0,0" Grid.Row="3" VerticalAlignment="Top" Height="45" Grid.RowSpan="2" Width="70" Click="Button_Click"/>
 
     </Grid>
 

@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Xml.Linq;
+using WpfApp1Tech.Parser;
 
 namespace WpfApp1Tech.Interpritator
 {
@@ -79,18 +80,21 @@ namespace WpfApp1Tech.Interpritator
             foreach (var CompanyOfVacancy in AllCompanyOfVacacy)
             {//в каждой конкретной компании
 
-                string[] files = Directory.GetFiles(CompanyOfVacancy, "linkText*.json");
+                string[] files = Directory.GetFiles(CompanyOfVacancy, "*.json");
                 foreach (string file in files)//находим все вакансии от этой компании
                 {
-
+                    
                     serializer = new JsonSerializer();
                     serializer.NullValueHandling = NullValueHandling.Ignore;
                     try
                     {
                         using var sr = new StreamReader(file);//чтение потока из указанного файла
                         using var jr = new JsonTextReader(sr);// валидауция например
-                        string fileText = serializer.Deserialize<Lemm2>(jr).Description;
+                        var vacancydata = serializer.Deserialize<VacancyData>(jr);
+                        string fileText = vacancydata.TextOfVacancy;
 
+                        //out int id текущей вакансии для последующей навигации
+                        int currentIdOfVacancy = vacancydata.VacancyId;
                         var taskWindow = new Lemm2Wind(); //далее сбор таски
 
                         //dic выводится в richTextBox на таске для отображения текущего собранного словаря 
@@ -106,7 +110,6 @@ namespace WpfApp1Tech.Interpritator
                             if (needWord.IsTech)
                             {
 
-                                dic = string.Concat(needWord.Word.ToUpper(), "-", " [", needWord.UsingTimes, "]", "\n***\r", dic);
 
                                 int index = fileText.IndexOf(needWord.Word);
                                 if (index != -1)
@@ -114,13 +117,15 @@ namespace WpfApp1Tech.Interpritator
                                     //на этом этапе сразу прибавляем найденное знакомое слово-технологию 
                                     vec[i].UsingTimes += 1;
                                     //далее добавление ID текущей вакансии в массив айди всех найденых с этим словом вакансий
+                                    int counter = 0;
                                     int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
-                                    for (int j = 0; j < vec[i].VacancyID.Length; j++)
+                                    foreach (var id in vec[i].VacancyID)
                                     {
-                                        newVacancyID[j] = vec[i].VacancyID[j];
+                                        newVacancyID[counter++] = id;
                                     }
-                                    newVacancyID[newVacancyID.Length - 1] = numOfVacancy;
+                                    newVacancyID[^1] = currentIdOfVacancy;
                                     vec[i].VacancyID = newVacancyID;
+                                    
                                     do // Поиск всех повторений слова-технологии в тексте для подсветки
                                     {
                                         dicWordInFileTextIndicator[index] = index + needWord.Word.Length;// Диапозон нахождения слова в тексте
@@ -128,6 +133,7 @@ namespace WpfApp1Tech.Interpritator
 
                                     } while (index != -1);
                                 }
+                                dic = string.Concat(needWord.Word.ToUpper(), "-", " [", needWord.UsingTimes, "]", "\n***\r", dic);
                             }
                         }
                         //выводим готовый dic
@@ -174,7 +180,7 @@ namespace WpfApp1Tech.Interpritator
                         //ТРЕБУЕТСЯ БУЛЬ НА КАЖДОЙ ИТЕРАЦИИ КАЖДОГО ФОРЫЧА ИНАЧЕ КАСКАДНЫЙ БРИК
                         if (Stop)
                         {
-                            string saveStopDicName = Path.Combine(wayToParsFolder, $"TechDict {shortParsDate}({numOfVacancy}VacCount).json");
+                            string saveStopDicName = Path.Combine(wayToParsFolder, $"TechDict {shortParsDate}.{numOfVacancy}.json");
 
                             serializer = new JsonSerializer();
                             serializer.Formatting = Formatting.Indented;
@@ -209,22 +215,34 @@ namespace WpfApp1Tech.Interpritator
                                         vec[j].UsingTimes += 1;
                                         //далее добавление ID текущей вакансии
                                         //в массив айди всех найденых с этим словом вакансий
-                                        int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
+                                        /*int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
                                         for (int id = 0; id < vec[i].VacancyID.Length; id++)
                                         {
                                             newVacancyID[id] = vec[i].VacancyID[j];
                                         }
-                                        newVacancyID[newVacancyID.Length - 1] = numOfVacancy;
+                                        newVacancyID[newVacancyID.Length - 1] = currentIdOfVacancy;
                                         vec[i].VacancyID = newVacancyID;
+                                        */
+                                        //далее добавление ID текущей вакансии в массив айди всех найденых с этим словом вакансий
+                                        int counter = 0;
+                                        int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
+                                        foreach (var id in vec[i].VacancyID)
+                                        {
+                                            newVacancyID[counter++] = id;
+                                        }
+                                        newVacancyID[^1] = currentIdOfVacancy;
+                                        vec[i].VacancyID = newVacancyID;
+
                                     }
                                 }
                             //если слова нет в словаре добавляем
                             if (NewTech[i] != "")
 
-                                vec.Add(new(new int[] { numOfVacancy }, NewTech[i], 1, true));
+
+                                vec.Add(new(new int[] { currentIdOfVacancy }, NewTech[i], 1, true));
                         }
 
-                        //блок записи всех слов не технологий и подсчет
+                        //блок записи всех слов НЕ технологий и подсчет
                         string textWithoultTech = fileText.ToLower();
                         for (int i = 0; i < vec.Count; i++)
                         {
@@ -261,14 +279,26 @@ namespace WpfApp1Tech.Interpritator
                                         vec[i].UsingTimes += 1;
                                         //далее добавление ID текущей вакансии
                                         //в массив айди всех найденых с этим словом вакансий
-                                        int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
+                                        /*int[] newVacancyID = new int[vec[i].VacancyID.Length];//было +1
                                         for (int j = 0; j < vec[i].VacancyID.Length; j++)
                                         {
                                             newVacancyID[j] = vec[i].VacancyID[j];
                                         }
-                                        newVacancyID[newVacancyID.Length - 1] = numOfVacancy;
+                                        newVacancyID[newVacancyID.Length - 1] = vacancydata.VacancyId;
                                         vec[i].VacancyID = newVacancyID;
                                         checkItsNew = false;
+                                        */
+                                        //далее добавление ID текущей вакансии в массив айди всех найденых с этим словом вакансий
+                                        int counter = 0;
+                                        int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
+                                        foreach (var id in vec[i].VacancyID)
+                                        {
+                                            newVacancyID[counter++] = id;
+                                        }
+                                        newVacancyID[^1] = currentIdOfVacancy;
+                                        vec[i].VacancyID = newVacancyID;
+                                        checkItsNew = false;
+
                                     }
 
                                 }
@@ -277,7 +307,7 @@ namespace WpfApp1Tech.Interpritator
                                 {
                                     //поднимаем первую букву,остальные опускаем и записываем в словарь.
                                     string toUpperfChar = $"{char.ToUpper(lem[0])}{lem[1..].ToLower()}";
-                                    TechDictionary word = new(new int[] { numOfVacancy }, toUpperfChar, 1, false);
+                                    TechDictionary word = new(new int[] { vacancydata.VacancyId }, toUpperfChar, 1, false);
                                     vec.Add(word);
                                 }
                             }
