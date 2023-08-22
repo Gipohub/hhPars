@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,11 +39,11 @@ namespace WpfApp1Tech
         }
         void ListBoxGenerate()
         {
-           // List<TodoItem> items = new List<TodoItem>();
-           // items.Add(new TodoItem() { Title = "Complete this WPF tutorial", Completion = 45 });
-           // items.Add(new TodoItem() { Title = "Learn C#", Completion = 80 });
-           // items.Add(new TodoItem() { Title = "Wash the car", Completion = 0 });
-           // lbTodoList.ItemsSource = items;
+            // List<TodoItem> items = new List<TodoItem>();
+            // items.Add(new TodoItem() { Title = "Complete this WPF tutorial", Completion = 45 });
+            // items.Add(new TodoItem() { Title = "Learn C#", Completion = 80 });
+            // items.Add(new TodoItem() { Title = "Wash the car", Completion = 0 });
+            // lbTodoList.ItemsSource = items;
         }
         private void ButtonSettings_Click(object sender, RoutedEventArgs e)
         {
@@ -72,7 +73,7 @@ namespace WpfApp1Tech
             //MessageBox.Show("Экспандер свернут");
             ((Expander)sender).Content = new Button() { Width = 80, Height = 30, Content = "Привет" };
 
-        }            
+        }
 
         public class DateItem
         {
@@ -105,9 +106,9 @@ namespace WpfApp1Tech
                     MessageBox.Show(item.Title + "");
 
                     var way = System.IO.Path.Combine(settings.ParsFolder, item.Title);
-                    
+
                     Lemm2.Lemmization(way);
-                    items.Add(new DateItem(item.Title,item.Search,1));
+                    items.Add(new DateItem(item.Title, item.Search, 1));
                 }
                 //ListTechResult.ItemsSource = items;
                 //ShortTextResult.Text.Add() = Booth.Search;
@@ -128,7 +129,7 @@ namespace WpfApp1Tech
             }
         }
 
-        
+
 
         private void SearchBox_Initialized(object sender, EventArgs e)
         {
@@ -136,12 +137,12 @@ namespace WpfApp1Tech
             //IEnumerable<string> allfiles = Directory.EnumerateFiles(Settings.ssDef.ParsFolder);
             int length = settings.ParsFolder.Length;
             for (int i = 0; i < allfolders.Length; i++)
-                {
-                allfolders[i] = allfolders[i].Remove(0,length);
-                }
+            {
+                allfolders[i] = allfolders[i].Remove(0, length);
+            }
             //allfolders =  allfolders.TrimPath();
             SearchBox.ItemsSource = allfolders;
-            
+
         }
 
         private void SearchBox_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -170,18 +171,18 @@ namespace WpfApp1Tech
         }
         private void SearchBox_TextInput(object sender, TextCompositionEventArgs e)
         {
-            
+
         }
         private void SearchBox_Drop(object sender, DragEventArgs e)
         {
-            
+
         }
         private void SearchBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
             try
             {
-                
+
                 if (SearchBox.SelectedValue != null)
                 {
                     SearchBox.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString("#3CACDC");/*#FFE4FCDF*/
@@ -190,21 +191,21 @@ namespace WpfApp1Tech
                     string[] shortFolders = Directory.GetDirectories(parsdate);
                     int length = settings.ParsFolder.Length;
 
-                    
-                    
+
+
                     //  string[] allFolders = shortFolders;
 
 
                     DateOfList = shortFolders;
-                    
+
                     //for (int i = 0; i < shortFolders.Length; i++)
-                   // {
+                    // {
                     //  shortFolders[i].Remove(0, length);
                     //}
                     if (shortFolders.Length == 0)
                     {
                         List<DateItem> items = new List<DateItem>();
-                        items.Add(new("Подобных поисков не было","" , 0));
+                        items.Add(new("Подобных поисков не было", "", 0));
 
                         ParsDateList.ItemsSource = items;
                     }
@@ -222,7 +223,7 @@ namespace WpfApp1Tech
                                 //последний элемент массива и его последние 8 символов
                                 var dicItem = dicName[^1][^7..^5];
                                 //dicItem = dicItem[^3..];
-                                if(int.TryParse(dicItem, out int result))
+                                if (int.TryParse(dicItem, out int result))
                                 {
                                     items.Add(new DateItem(shortFolder.Remove(0, length), sbsv, result));
                                 }
@@ -239,7 +240,7 @@ namespace WpfApp1Tech
                         }
                         //for (int i = 0; i < shortFolders.Length; i++)
                         {
-                        //    items.Add(new DateItem(shortFolders[i].Remove(0, length), sbsv, i));
+                            //    items.Add(new DateItem(shortFolders[i].Remove(0, length), sbsv, i));
                         }
 
 
@@ -248,11 +249,12 @@ namespace WpfApp1Tech
                         //items.Add(new DateItem() { Title = "Wash the car", CountOfFiles = 0 });
 
                         ParsDateList.ItemsSource = items;
-                     
+
                     }
                     ButtonHoldList.IsEnabled = true;
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -260,30 +262,34 @@ namespace WpfApp1Tech
         string way = "";
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            
-            
+
+
 
         }
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            string[] selectedTech = new string[TopNoTechResult.SelectedItems.Count];
+            string[] selectedTech = new string[TopTechResult.SelectedItems.Count];
             int count = 0;
             List<TechDictionary> selectedWord = new();
-            foreach (TechDictionary item in TopNoTechResult.SelectedItems)
+            foreach (TechDictionary item in TopTechResult.SelectedItems)
             {
                 MessageBox.Show(item.Word + "");
                 selectedWord.Add(item);
             }
 
             var WH = new Worder(selectedWord/*, way*/);
-            ListTechResult.ItemsSource = WH.pairs;
+            List<DateItem> words = new();
+            foreach (var pair in WH.pairs)
+            {
+                foreach (var item in pair.Value)
+                {
+                    DateItem dateItem = new(pair.Key, "", item);
+                    words.Add(dateItem);
+                }
+            }
+            ListTechResult.ItemsSource = words;
 
-        }
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            string[] Alls = Directory.GetDirectories(settings.ParsFolder);
-            Lemm2.Lemmization(Alls);
-        }
+        }       
 
         private void BtnSearch_Click(object sender, RoutedEventArgs e)
         {
@@ -301,24 +307,76 @@ namespace WpfApp1Tech
 
         private void ParsDateList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ParsDateList.SelectedItems.Count > 1) 
+            if (ParsDateList.SelectedItems.Count > 1)
             {
                 //не настроено на множество
             }
             foreach (DateItem item in ParsDateList.SelectedItems)
             {
-                if(item.CountOfFiles > 0)
+                if (item.CountOfFiles > 0)
                 {
                     way = System.IO.Path.Combine(settings.ParsFolder, item.Title, $"TechDictionary {item.Title[^10..]}.{item.CountOfFiles}.json");
                     var ip = new Interpreter(way);
-                    
+
 
                     TopTechResult.ItemsSource = ip.VecTech;
                     TopNoTechResult.ItemsSource = ip.VecNoTech;
                 }
-                
+
             }
-            
+
         }
+
+        private void ListTechResult_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var ltr = (DateItem)ListTechResult.SelectedItem;
+            if (ltr != null)
+            {
+                var pdl = (DateItem)ParsDateList.SelectedItem;
+
+                bool stop = false;
+                VacancyData? vacancydata = null;
+
+                string way = System.IO.Path.Combine(settings.ParsFolder, pdl.Title);
+                string[] direct = Directory.GetDirectories(way);
+                foreach (string dir in direct)
+                {
+                    string[] files = Directory.GetFiles(dir, "*.json");
+                    foreach (string file in files)
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        serializer.NullValueHandling = NullValueHandling.Ignore;
+                        try
+                        {
+
+
+                            using var sr = new StreamReader(file);//чтение потока из указанного файла
+                            using var jtr = new JsonTextReader(sr);// валидауция например
+                            vacancydata = serializer.Deserialize<VacancyData>(jtr);
+                            if (vacancydata.VacancyId == ltr.CountOfFiles)
+                            {
+                                stop = true;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                        if (stop) break;
+                    }
+                    if (stop) break;
+                }
+                NameOfVacancyBlock.Text = vacancydata.NameOfVacancy;
+                NameOfCompanyBlock.Text = vacancydata.NameOfCompany;
+                AdressOfVacancyBlock.Text = vacancydata.CityOfVacancy;
+                TextOfVacancyBlock.Text = vacancydata.TextOfVacancy;
+                HerfOfVacancyBox.Text = vacancydata.HerfOfVacancy;
+            }
+        }
+
+
     }
+
 }
+
+

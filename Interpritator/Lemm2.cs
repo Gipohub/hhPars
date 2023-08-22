@@ -76,9 +76,11 @@ namespace WpfApp1Tech.Interpritator
             //далее проходимся по всем найденым парсингом компаниям
             string[] AllCompanyOfVacacy = Directory.GetDirectories(wayToParsFolder);
             int directoryCount = AllCompanyOfVacacy.Length;
+            
 
             foreach (var CompanyOfVacancy in AllCompanyOfVacacy)
             {//в каждой конкретной компании
+                int processedCompany = 100 / AllCompanyOfVacacy.Length * comOfVacancy; 
 
                 string[] files = Directory.GetFiles(CompanyOfVacancy, "*.json");
                 foreach (string file in files)//находим все вакансии от этой компании
@@ -92,6 +94,7 @@ namespace WpfApp1Tech.Interpritator
                         using var jr = new JsonTextReader(sr);// валидауция например
                         var vacancydata = serializer.Deserialize<VacancyData>(jr);
                         string fileText = vacancydata.TextOfVacancy;
+                        string upperText = fileText.ToUpper();
 
                         //out int id текущей вакансии для последующей навигации
                         int currentIdOfVacancy = vacancydata.VacancyId;
@@ -106,12 +109,12 @@ namespace WpfApp1Tech.Interpritator
 
                         for (int i = 0; i < vec.Count; i++)
                         {
-                            var needWord = vec[i];
+                            var needWord = vec[i];                            
                             if (needWord.IsTech)
                             {
-
-
-                                int index = fileText.IndexOf(needWord.Word);
+                                //приводим копии текста и искомых слов к верхнему регистру
+                                needWord.Word = needWord.Word.ToUpper();
+                                int index = upperText.IndexOf(needWord.Word);
                                 if (index != -1)
                                 {
                                     //на этом этапе сразу прибавляем найденное знакомое слово-технологию 
@@ -129,7 +132,7 @@ namespace WpfApp1Tech.Interpritator
                                     do // Поиск всех повторений слова-технологии в тексте для подсветки
                                     {
                                         dicWordInFileTextIndicator[index] = index + needWord.Word.Length;// Диапозон нахождения слова в тексте
-                                        index = fileText.IndexOf(needWord.Word, dicWordInFileTextIndicator[index]);
+                                        index = upperText.IndexOf(needWord.Word, dicWordInFileTextIndicator[index]);
 
                                     } while (index != -1);
                                 }
@@ -170,8 +173,8 @@ namespace WpfApp1Tech.Interpritator
                         VacancyFlowDoc.Blocks.Add(VacancyParagraph);
                         taskWindow.VacancyRichTextBox.Document = VacancyFlowDoc;
 
-                        taskWindow.ProgressOf.Text = $"{shortParsDate},{numOfVacancy} of {AllCompanyOfVacacy.Length}";
-                        taskWindow.VacancyProgress.Value = 100 * (100 * numOfVacancy / AllCompanyOfVacacy.Length);// (100 * waysToPars / waysToParsFolder.Length);
+                        taskWindow.ProgressOf.Text = $"{shortParsDate},{comOfVacancy} of {AllCompanyOfVacacy.Length}";
+                        taskWindow.VacancyProgress.Value = processedCompany;// (100 * waysToPars / waysToParsFolder.Length);
                         //рассчитываем примерный прогресс сбора словаря
 
                         taskWindow.ShowDialog();//отображается собранная таска с данными из файла и словаря
@@ -180,7 +183,7 @@ namespace WpfApp1Tech.Interpritator
                         //ТРЕБУЕТСЯ БУЛЬ НА КАЖДОЙ ИТЕРАЦИИ КАЖДОГО ФОРЫЧА ИНАЧЕ КАСКАДНЫЙ БРИК
                         if (Stop)
                         {
-                            string saveStopDicName = Path.Combine(wayToParsFolder, $"TechDict {shortParsDate}.{numOfVacancy}.json");
+                            string saveStopDicName = Path.Combine(wayToParsFolder, $"TechDict {shortParsDate}.{numOfVacancy}.{processedCompany}.json");
 
                             serializer = new JsonSerializer();
                             serializer.Formatting = Formatting.Indented;
@@ -325,7 +328,7 @@ namespace WpfApp1Tech.Interpritator
 
             if (directoryCount > 0)
             {
-                string saveName = Path.Combine(wayToParsFolder, $"TechDictionary {shortParsDate}.json");
+                string saveName = Path.Combine(wayToParsFolder, $"TechDictionary {shortParsDate}.99.json");
 
                 serializer = new JsonSerializer();
                 serializer.Formatting = Formatting.Indented;

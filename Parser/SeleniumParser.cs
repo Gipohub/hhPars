@@ -47,6 +47,7 @@ namespace WpfApp1Tech.Parser
             bool noAccept = true;
             bool stoped = false;
             int trysCount = 0;
+            int processedVacancy = 0;
             //
             do
             {
@@ -86,152 +87,250 @@ namespace WpfApp1Tech.Parser
             if (noAccept) return;
 
             //установка требуеиого домашнего региона
-            if (driver.FindElement(By.XPath(@"//html/body/div[4]/div/div[1]/div/div/div/div/div[1]/div[1]/div[1]/button/span")).Text != "Киров (Кировская область)")
-            {//индвивидуальный блок,ТРЕБУЕТСЯ УНИФИКАЦИЯ
-                try
-                {
-                    driver.FindElement(By.XPath(@"//html/body/div[4]/div/div[1]/div/div/div/div/div[1]/div[1]/div[1]/button/span")).Click();
-                    HelperVoids.RndmWait(1000, 1000);
-                    driver.FindElement(By.XPath(@"/html/body/div[4]/div/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div/div[1]/div[2]/div/div/button")).Click();
-                    HelperVoids.RndmWait(1000, 1000);
-                    driver.FindElement(By.XPath(@"/html/body/div[4]/div/div[1]/div[2]/div/div[2]/div[2]/div[2]/div/div/div[5]/div/div[2]/div[2]/div[12]/div/div[2]/ul/li[52]/a")).Click();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Сбой установки требуемого региона") ;
-                }
-            }//}
+            switch (settings.RegionSettings)
+            {
+                case 0: // не менять
+                    {
+                        break;
+                    }
+                case 1: // установить общий
+                    {
+                        try
+                        {
+                            driver.FindElement(By.XPath(settings.WaysToCityOfSearchPointers[0])).Click();
+                            HelperVoids.RndmWait(1000, 1000);
+                            driver.FindElement(By.XPath(settings.WaysToCityOfSearchPointers[3])).Click();
+                            HelperVoids.RndmWait(1000, 1000);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Сбой сброса региона");
+                        }
+                        break;
+                    }
+                case 2: // устанавливать нужный домашний !!! не работает
+                    {
+                        if (driver.FindElement(By.XPath(settings.WaysToCityOfSearchPointers[0])).Text != settings.HomeRegion)
+                        {//индвивидуальный блок,ТРЕБУЕТСЯ УНИФИКАЦИЯ
+                            try
+                            {
+                                driver.FindElement(By.XPath(settings.WaysToCityOfSearchPointers[0])).Click();
+                                HelperVoids.RndmWait(1000, 2000);
+                                driver.FindElement(By.XPath(settings.WaysToCityOfSearchPointers[1])).Click();
+                                HelperVoids.RndmWait(1000, 2000);
+                                driver.FindElement(By.XPath(settings.WaysToCityOfSearchPointers[2])).Click();
+                                HelperVoids.RndmWait(1000, 2000);
+                                var chars = driver.FindElements(By.XPath(settings.WaysToCityOfSearchPointers[3]));
+                                foreach (var ch in chars)
+                                {
+                                    if (ch.Text.ToCharArray()[0] == settings.HomeRegion[0])
+                                    {
+                                        ch.Click();
+                                        break;
+                                    }
+                                }
+                                HelperVoids.RndmWait(1000, 2000);
+                                var regionList = driver.FindElements(By.XPath(settings.WaysToCityOfSearchPointers[4]));
+                                foreach (var region in regionList)
+                                {
+                                    if (region.Text == settings.HomeRegion)
+                                    {
+                                        IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                                        js.ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
+                                        region.FindElement(By.XPath(@"//a[@class='bloko-link bloko-link_disable-visited']")).Click();
+                                        break;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message, "Сбой установки требуемого региона");
+                            }
+                        }//}
+                        break;
+                    }
 
-            
-
+            }
+            HelperVoids.RndmWait(1000, 2000);
             //находим поле для поиска и вводим в него последний сохранённый запрос
-            driver.FindElement(By.Id(@$"a11y-search-input")).SendKeys(request);
+            driver.FindElement(By.Id(settings.SearchBoxPointer)).SendKeys(request);
 
             //подождем пару секунд для иммитации действий пользователя
             HelperVoids.RndmWait(500, 3000); 
 
             //находим кнопку для запуска поиска и нажимаем её
             driver.FindElement(By.XPath($@"{settings.SearchButtonPointer}")).Click();
-            
+
+            //находим общее число найденых вакансий по запросу
+            string vacancyCountstr = driver.FindElement(By.XPath($@"{settings.VacancyCountPointer}")).Text;
+            int vacancyCount = 0;
+            for (int i = 0; i < vacancyCountstr.Length;i++)
+            {
+                if (int.TryParse($"{vacancyCountstr[i]}", out int num))
+                {
+                    vacancyCount = (vacancyCount * 10) + num;
+                }
+            }
             string nameOfVacancy;
             string nameOfCompany;
             string cityOfVacancy = "none";
             string herfOfVacancy;
             string textOfVacancy = "none";
-            
+
             try
             {
-                //массив ссылок на все полные вакансии на странице
-                var linkMassive = driver.FindElements(By.CssSelector(@$"{settings.LinkToFullVacancyPointer}"));
-                //поиск всех коротких анкет вакансий на странице
-                var companyList = driver.FindElements(By.CssSelector(@$"{settings.ShortVacancyPointer}"));
-
-                if (companyList.Count > 0)
+                do
                 {
-                    for (int i = 0; i < companyList.Count; i++)
-                    {
-                        iterationPars++;
-                        //находим название конкретной вакансии
-                        nameOfVacancy = companyList[i].FindElement(By.CssSelector(@$"{settings.NameOfVacancyPointer}")).Text;                        
-                        //находим название компании
-                        nameOfCompany = companyList[i].FindElement(By.CssSelector(@$"{settings.NameOfCompanyPointer}")).Text;
-                        
-                        //чистим названия воизбежание искажений пути к папке
-                        nameOfVacancy = nameOfVacancy.Replace("/", "");
-                        nameOfCompany = nameOfCompany.Replace("/", "");
-                        nameOfVacancy = nameOfVacancy.Replace("\\", "");
-                        nameOfCompany = nameOfCompany.Replace("\\", "");
+                    //массив ссылок на все полные вакансии на странице
+                    var linkMassive = driver.FindElements(By.CssSelector(@$"{settings.LinkToFullVacancyPointer}"));
+                    //поиск всех коротких анкет вакансий на странице
+                    var companyList = driver.FindElements(By.CssSelector(@$"{settings.ShortVacancyPointer}"));
 
-                        HelperVoids.RndmWait(500, 2000);
-                        //переходим на страничку вакансии
-                        linkMassive[i].Click();
-                        //переключаемся на эту вкладку
-                        driver.SwitchTo().Window(driver.WindowHandles.Last());
-                        //запоминаем Url вакансии
-                        herfOfVacancy = driver.Url;
-                        
-                        //собираем текст вакансии
-                        try
+                    if (companyList.Count > 0)
+                    {
+                        for (int i = 0; i < companyList.Count; i++)
                         {
-                            textOfVacancy = driver.FindElement(By.CssSelector(@$"{settings.VacancyDescriptionPointer}")).Text;
-                        }
-                        catch //страничка вакансии на hh может быть другой структуры (с банерами)
-                        {
-                            try
+                            iterationPars++;
+                            //находим название конкретной вакансии
+                            nameOfVacancy = companyList[i].FindElement(By.CssSelector(@$"{settings.NameOfVacancyPointer}")).Text;
+                            //находим название компании
+                            nameOfCompany = companyList[i].FindElement(By.CssSelector(@$"{settings.NameOfCompanyPointer}")).Text;
+
+                            //чистим названия воизбежание искажений пути к папке
+                            nameOfVacancy = nameOfVacancy.Replace("/", "");
+                            nameOfCompany = nameOfCompany.Replace("/", "");
+                            nameOfVacancy = nameOfVacancy.Replace("\\", "");
+                            nameOfCompany = nameOfCompany.Replace("\\", "");
+
+                            HelperVoids.RndmWait(500, 2000);
+                            //переходим на страничку вакансии
+                            linkMassive[i].Click();
+                            //переключаемся на эту вкладку
+                            driver.SwitchTo().Window(driver.WindowHandles.Last());
+                            //запоминаем Url вакансии
+                            herfOfVacancy = driver.Url;
+
+
+                            //собираем текст вакансии
+                            //страничка вакансии на hh может быть другой структуры (с банерами)
+                            int checker = 1;
+                            foreach (var item in settings.VacancyDescriptionPointers)
                             {
-                                foreach (var item in settings.SpareAdressOfVacancyPointer)
+                                try
                                 {
                                     textOfVacancy = driver.FindElement(By.XPath(@$"{item}")).Text;
                                 }
+                                catch (Exception ex)
+                                {
+                                    /*try
+                                    {
+                                        var linksToTextOfVacancy = driver.FindElements(By.XPath(@$"{item}"));
+                                        foreach(var link in linksToTextOfVacancy)
+                                        {
+                                            try
+                                            {
+                                                textOfVacancy = $"{textOfVacancy} {driver.FindElement(By.XPath(@$"{link}")).Text}";
+                                            }
+                                            catch {  }
+                                        }
+                                    }
+                                    catch {  }*/
+                                    if (checker == settings.VacancyDescriptionPointers.Length)
+                                    {
+                                        MessageBox.Show(ex.Message, $"Не найден локатор описания вакансии {nameOfVacancy}");
+                                    }
+                                }
+                                checker++;
+                                if (textOfVacancy != "none") break;
                             }
-                            catch
+
+                            //запоминаем город вакансии
+                            checker = 1;
+                            foreach (var item in settings.AdressesOfVacancyPointers)
                             {
-                                                             
-                            }
-                            
-                        }
-                        //запоминаем город вакансии
-                        try
-                        {
-                            cityOfVacancy = driver.FindElement(By.XPath(@$"{settings.AdressOfVacancyPointer}")).Text;
-                        }
-                        catch
-                        {
-                            try
-                            {
-                                foreach (var item in settings.SpareAdressOfVacancyPointer)
+                                try
                                 {
                                     cityOfVacancy = driver.FindElement(By.XPath(@$"{item}")).Text;
                                 }
+                                catch (Exception ex)
+                                {
+                                    if (checker == settings.AdressesOfVacancyPointers.Length)
+                                    {
+                                        MessageBox.Show(ex.Message, $"Не найден локатор города вакансии {nameOfVacancy}");
+                                    }
+                                }
+                                checker++;
+                                if (cityOfVacancy != "none") break;
+
                             }
-                            catch
+
+                            //генерируем ID вакансии на основе ее данных
+                            if (int.TryParse($"{iterationPars}00{vacancyCount}00{textOfVacancy.Length}", out int vacancyId))
+                            { }
+                            else 
                             {
-                                                           
+                                int counter = 1;
+                                for(i = 0; i < vacancyCount.Length(); i++)
+                                {
+                                    counter *= 10;
+                                }
+                                vacancyId = (iterationPars * 100 * counter) + vacancyCount * 100; }
+
+                            //заворачиваем собранную информацию в класс
+                            VacancyData vacancy = new(vacancyId, nameOfVacancy, nameOfCompany, cityOfVacancy, herfOfVacancy, textOfVacancy);
+                            try
+                            {
+                                string pathStringCompany = Path.Combine(settings.ParsFolder, request, settings.DayToday, $"{nameOfCompany}");
+
+                                string fileString;
+                                if (Directory.Exists(pathStringCompany))
+                                {
+                                    fileString = Path.Combine(pathStringCompany, $"{Directory.GetFiles(pathStringCompany).Length + 1}{nameOfVacancy} ({iterationPars}).json");
+                                }
+                                else
+                                {
+                                    Directory.CreateDirectory(pathStringCompany);
+                                    fileString = Path.Combine(pathStringCompany, $"{01}{nameOfVacancy} ({iterationPars}).json");
+
+                                }
+
+                                JsonSerializer serializer = new JsonSerializer();
+                                serializer.Formatting = Formatting.Indented;
+                                serializer.NullValueHandling = NullValueHandling.Ignore;
+                                using (var sw = new StreamWriter(fileString))
+                                using (var jw = new JsonTextWriter(sw))
+                                {
+                                    serializer.Serialize(jw, vacancy);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"{nameOfVacancy} {nameOfCompany}, Ошибка:{ex.Message}", $"Oшибка при записи");
+                            }
+
+                            HelperVoids.RndmWait(500, 3000);//ожидание и закрытие вкладки
+                            driver.Close();
+                            driver.SwitchTo().Window(driver.WindowHandles.First());
+                            processedVacancy++;
+                            if (processedVacancy > settings.LimitOfVacancyPars)
+                            {
+                                stoped = true;
                             }
                         }
-
-                        //генерируем ID вакансии на основе ее данных
-                        if (int.TryParse($"{iterationPars}0000{textOfVacancy.Length}", out int vacancyId))
-                             { }
-                        else { vacancyId = iterationPars * 10000; }
-                        
-                        //заворачиваем собранную информацию в класс
-                        VacancyData vacancy = new(vacancyId, nameOfVacancy, nameOfCompany, cityOfVacancy, herfOfVacancy, textOfVacancy);
-                        try
-                        {
-                            string pathStringCompany = Path.Combine(settings.ParsFolder, request, settings.DayToday, $"{nameOfCompany}");
-                           
-                            string fileString;                                                      
-                            if (Directory.Exists(pathStringCompany))
-                            {
-                                fileString = Path.Combine(pathStringCompany, $"{Directory.GetFiles(pathStringCompany).Length + 1}{nameOfVacancy} ({iterationPars}).json");
-                            } 
-                            else
-                            {
-                                Directory.CreateDirectory(pathStringCompany);
-                                fileString = Path.Combine(pathStringCompany, $"{01}{nameOfVacancy} ({iterationPars}).json");
-
-                            }
-
-                            JsonSerializer serializer = new JsonSerializer();
-                            serializer.Formatting = Formatting.Indented;
-                            serializer.NullValueHandling = NullValueHandling.Ignore;
-                            using (var sw = new StreamWriter(fileString))
-                            using (var jw = new JsonTextWriter(sw))
-                            {
-                                serializer.Serialize(jw, vacancy);                                                                
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show($"{nameOfVacancy} {nameOfCompany}, Ошибка:{ex.Message}", $"Oшибка при записи");
-                        }
-
-                        HelperVoids.RndmWait(500, 3000);//ожидание и закрытие вкладки
-                        driver.Close();
-                        driver.SwitchTo().Window(driver.WindowHandles.First());
                     }
-                }
+                    else
+                    {
+                        stoped = true;
+                    }
+                    try
+                    {
+                        driver.FindElement(By.XPath(@"//a[@data-qa='pager-next']")).Click();
+                    }
+                    catch
+                    {
+                        stoped = true;
+                    }
+                } while (stoped == false);
             }
             catch (Exception ex)
             {

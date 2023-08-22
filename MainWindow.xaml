@@ -5,126 +5,133 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1Tech"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1200">
+        Title="MainWindow" Height="650" Width="1205">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="164*"/>
-            <RowDefinition Height="70*"/>
-            <RowDefinition Height="215*"/>
-            <RowDefinition Height="70*"/>
-            <RowDefinition Height="65*"/>
+            <RowDefinition Height="159*"/>
+            <RowDefinition Height="95*"/>
+            <RowDefinition Height="233*"/>
+            <RowDefinition Height="76*"/>
+            <RowDefinition Height="71*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="17*"/>
-            <ColumnDefinition Width="63*"/>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="159*"/>
+            <ColumnDefinition Width="32*"/>
         </Grid.ColumnDefinitions>
-        <TabControl Margin="33,33,917,22"  Grid.RowSpan="3" Grid.ColumnSpan="2" Grid.Row="2"  >
-            <TabItem Header="TabItem" Background="SlateBlue">
-                <ListBox x:Name="TopTechResult" SelectionMode="Multiple" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left" Height="267" Width="250" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="2">
+        <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="{}{ |Parser| |Saver| |Interpritator| }" VerticalAlignment="Center" Width="236" Height="30" FontSize="16" TextAlignment="Center"/>
+        <Button Click ="ButtonSettings_Click" Content="⚙" Margin="120,0,0,119" VerticalAlignment="Bottom" Height="40" Grid.Column="2" FontSize="22"/>
+        <StackPanel Grid.Column="1" Margin="92,55,10,34" Orientation="Horizontal" Height="70">
+            <ComboBox x:Name="SearchBox" Width="600" IsEditable="True" Initialized="SearchBox_Initialized" IsEnabledChanged="SearchBox_IsEnabledChanged" FontSize="16" ScrollViewer.CanContentScroll="True" Cursor="Help" Height="52" TextInput="SearchBox_TextInput" Drop="SearchBox_Drop" SelectionChanged="SearchBox_SelectionChanged" Margin="15,5,0,5" VerticalAlignment="Center">
+                <ComboBox.Background>
+                    <LinearGradientBrush EndPoint="0,0" SpreadMethod="Repeat" MappingMode="Absolute" Opacity="0">
+                        <GradientStop Color="#FFF0F0F0"/>
+                        <GradientStop Color="#FFC02323" Offset="1"/>
+                    </LinearGradientBrush>
+                </ComboBox.Background>
+            </ComboBox>
+            <Button x:Name="BtnSearch" Content="🔍" Height="52" Width="64" Click="BtnSearch_Click" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,15,5"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+            <ListBox x:Name="ParsDateList" HorizontalContentAlignment="Stretch" SelectionMode="Extended" Width="705" SelectionChanged="ParsDateList_SelectionChanged" Height="87">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="180" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Title}" />
+                            <TextBlock Text="{Binding Title}" />
+                            <ProgressBar Grid.Column="1" Minimum="0" Maximum="99" Value="{Binding CountOfFiles}" />
+                            <TextBlock Text="{Binding Title}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button x:Name="ButtonHoldList" Content="захолдить" Height="65" Width="75" IsEnabled="False" Click="ButtonHoldList_Click"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3" Margin="10,10,10,10" Grid.RowSpan="3" Grid.Row="2">
+
+            <TabControl Height="325" Width="255"  >
+                <TabItem Header="TabItem" Background="SlateBlue">
+                    <ListBox x:Name="TopTechResult" SelectionMode="Multiple" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left" Height="267" Width="250" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="2">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Word}" />
+                                    <TextBlock Text="{Binding UsingTimes}" Grid.Column="2"/>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </TabItem>
+                <TabItem Header="TabItem" Background="SlateBlue">
+                    <ListBox x:Name="TopNoTechResult" SelectionMode="Multiple" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left" Height="267" Width="250" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="2">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Word}" />
+                                    <TextBlock Text="{Binding UsingTimes}" Grid.Column="2"/>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </TabItem>
+                <Grid/>
+
+            </TabControl>
+            <StackPanel Orientation="Vertical" Height="340" Width="430">
+                <Button x:Name="StartButton" Content="ButtonToStart" BorderThickness="15,1,1,1" FontFamily="Arial Black" Height="20" Width="112" Click="StartButton_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <ListBox x:Name="ListTechResult" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionMode="Single" SelectionChanged="ListTechResult_SelectionChanged" Height="300" Width="380">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Margin="0,2">
+                            <Grid Margin="0,1">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100" />
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="180" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Word}" />
-                                <TextBlock Text="{Binding UsingTimes}" Grid.Column="2"/>
-
+                                <TextBlock Text="{Binding Title}" />
+                                <TextBlock Text="{Binding Title}" />
+                                <TextBlock Text="{Binding Title}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </TabItem>
-            <TabItem Header="TabItem" Background="SlateBlue">
-                <ListBox x:Name="TopNoTechResult" SelectionMode="Multiple" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left" Height="267" Width="250" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="2">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Word}" />
-                                <TextBlock Text="{Binding UsingTimes}" Grid.Column="2"/>
-
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </TabItem>
-            <Grid/>
-
-        </TabControl>
-        <Button x:Name="StartButton" Content="ButtonToStart" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="15,1,1,1" FontFamily="Arial Black" Height="20" Width="112" Grid.Row="2" Click="StartButton_Click" Margin="55,33,0,0" Grid.Column="1"/>
-        <Expander Expanded="Expander_Expanded" Collapsed="Expander_Collapsed" Margin="193,25,0,162" HorizontalAlignment="Left" Width="270" BorderThickness="1,1,1,1" Grid.Column="1" Header="1" Grid.Row="2"/>
-        <Button x:Name="BtnSearch" Content="Search" HorizontalAlignment="Left" Margin="299,97,0,0" VerticalAlignment="Top" Height="49" Width="64" Grid.Column="1" Click="BtnSearch_Click"/>
-        <Button Click ="ButtonSettings_Click" Content="Settings" HorizontalAlignment="Left" Margin="863,20,0,0" VerticalAlignment="Top" Width="60" Height="26" Grid.Column="1"/>
-        <Button x:Name="ButtonHoldList" Content="захолдить" HorizontalAlignment="Center" Margin="0,97,0,0" VerticalAlignment="Top" Height="46" Width="102" IsEnabled="False" Click="ButtonHoldList_Click" Grid.Column="1"/>
-        <ListBox x:Name="ParsDateList" HorizontalContentAlignment="Stretch" Margin="114,113,0,206" SelectionMode="Extended" HorizontalAlignment="Left" Width="972" Grid.ColumnSpan="2" Grid.RowSpan="3" SelectionChanged="ParsDateList_SelectionChanged">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="0,1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="180" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Title}" />
-                        <TextBlock Text="{Binding Title}" />
-                        <ProgressBar Grid.Column="1" Minimum="0" Maximum="99" Value="{Binding CountOfFiles}" />
-                        <TextBlock Text="{Binding Title}" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <TextBlock HorizontalAlignment="Left" Margin="150,32,0,0" TextWrapping="Wrap" Text="{}{ |Parser| |Saver| |Interpritator| }" VerticalAlignment="Top" Grid.Row="4" Width="340" Height="33" FontSize="24" Grid.Column="1"/>
-        <ComboBox x:Name="SearchBox" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Width="706" IsEditable="True" Initialized="SearchBox_Initialized" IsEnabledChanged="SearchBox_IsEnabledChanged" FontSize="16" ScrollViewer.CanContentScroll="True" Cursor="Help" Height="52" TextInput="SearchBox_TextInput" Drop="SearchBox_Drop" SelectionChanged="SearchBox_SelectionChanged" Grid.Column="1">
-            <ComboBox.Background>
-                <LinearGradientBrush EndPoint="0,0" SpreadMethod="Repeat" MappingMode="Absolute" Opacity="0">
-                    <GradientStop Color="#FFF0F0F0"/>
-                    <GradientStop Color="#FFC02323" Offset="1"/>
-                </LinearGradientBrush>
-            </ComboBox.Background>
-        </ComboBox>
-        <ListBox x:Name="ListTechResult" Grid.Column="1" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionMode="Multiple" Margin="55,58,520,22" Grid.RowSpan="3" Grid.Row="2">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="0,2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding StringFormat=1}" />
-                        <TextBlock Text="" Grid.Column="2"/>
-
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="791,63,0,0" Grid.Row="3" VerticalAlignment="Top" Height="50" Width="130" Grid.Column="1" Grid.RowSpan="2"/>
-        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="711,27,0,0" Grid.Row="4" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="13,10,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
-        <Grid Grid.Column="1" Grid.Row="2" Margin="468,33,0,47" Grid.RowSpan="3">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="37*"/>
-                <RowDefinition Height="50*"/>
-                <RowDefinition Height="183*"/>
-            </Grid.RowDefinitions>
-            <TextBlock x:Name="NameOfVacancyBlock" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Height="82" Width="255" Grid.RowSpan="2"/>
-            <TextBlock x:Name="NameOfCompanyBlock" HorizontalAlignment="Left" Margin="270,0,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Height="17" Width="170"/>
-            <TextBlock x:Name="AdressOfVacancyBlock" HorizontalAlignment="Left" Margin="270,0,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Height="19" Width="195" Grid.Row="1"/>
-            <TextBlock x:Name="TextOfVacancyBlock" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Height="163" Width="580" FontSize="8" RenderTransformOrigin="0.5,0.5" Grid.Row="2">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="1"/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-        </Grid>
-        <Button Grid.Column="1" Content="Button" HorizontalAlignment="Left" Margin="453,43,0,0" Grid.Row="3" VerticalAlignment="Top" Height="45" Grid.RowSpan="2" Width="70" Click="Button_Click"/>
+            </StackPanel>
+            <Grid Height="300" Width="487">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="37*"/>
+                    <RowDefinition Height="50*"/>
+                    <RowDefinition Height="145*"/>
+                    <RowDefinition Height="38*"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="NameOfCompanyBlock" HorizontalAlignment="Left" Margin="270,0,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Height="17" Width="170"/>
+                <TextBlock x:Name="AdressOfVacancyBlock" HorizontalAlignment="Left" Margin="270,0,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Height="19" Width="195" Grid.Row="1"/>
+                <TextBlock x:Name="TextOfVacancyBlock" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="120" Width="456" FontSize="8" RenderTransformOrigin="0.5,0.5" Grid.Row="2" Margin="0,10,0,0">
+                    <TextBlock.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+                <TextBlock x:Name="NameOfVacancyBlock" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Height="82" Width="255" Grid.RowSpan="2"/>
+                <TextBox x:Name="HerfOfVacancyBox" HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="457" Height="18"/>
+            </Grid>
+        </StackPanel>
 
     </Grid>
 

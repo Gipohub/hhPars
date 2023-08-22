@@ -17,7 +17,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Margin="0,0,11,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Margin="0,0,11,0" HorizontalAlignment="Right" VerticalAlignment="Center" d:IsLocked="True">
             <GroupBox Header="Way data library" Height="45" Width="525">
                 <StackPanel>
                     <TextBlock x:Name="PathWayParsBlock" TextWrapping="Wrap" Text="TextBlock" Initialized="PathWayParsBlock_Initialized" Width="499" Height="20" Cursor="ArrowCD" FontWeight="Normal" FontStyle="Italic" TextDecorations="{x:Null}" FontSize="13"/>
@@ -25,24 +25,30 @@
             </GroupBox>
             <Button x:Name="Viev" Click ="BtnOpenFolder_Click" Content="Обзор" Background="#FFC6BABA" Height="25" Width="97" Margin="0,0,0,-8"/>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" d:IsLocked="True">
-            <Grid Width="100"/>
-            <StackPanel Width="282" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Width="624">
+            <StackPanel Width="173" Orientation="Horizontal">
                 <Label Content="Limit of Parsing:" Height="29" Width="99" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
 
-                <CheckBox x:Name="CheckLim" Content="" Checked="CheckLim_Checked" Unchecked="CheckLim_Unchecked" Initialized="CheckLim_Initialized" VerticalAlignment="Center" Margin="0,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="29"/>
-                <TextBox x:Name="numberBox" TextWrapping="Wrap" TextChanged="numberBox_TextChanged_1" PreviewTextInput="numberBox_PreviewTextInput_1" IsEnabled="False" Initialized="numberBox_Initialized" FontSize="14" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="29" Width="85"/>
-                <Label x:Name="Max" Content="(9999 max)" Height="29" Width="68" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden" />
+                <CheckBox x:Name="CheckLim" Content="" Checked="CheckLim_Checked" Unchecked="CheckLim_Unchecked" VerticalAlignment="Center" Margin="0,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="29"/>
+                <TextBox x:Name="ParsLimitBox" TextWrapping="Wrap" TextChanged="ParsLimitBox_TextChanged" PreviewTextInput="ParsLimitBox_PreviewTextInput" IsEnabled="False" Initialized="ParsLimitBox_Initialized" FontSize="14" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="29" Width="49"/>
+
+            </StackPanel>
+            <Grid Width="3"/>
+            <StackPanel Width="438" Orientation="Horizontal">
+                <RadioButton x:Name="NoChangeRadio" Content="Don't change region" VerticalAlignment="Center" Width="137" IsChecked="True" Initialized="NoChangeRadio_Initialized"/>
+                <RadioButton x:Name="ResetRadio" Content="Reset region" VerticalAlignment="Center" Width="93" Initialized="ResetRadio_Initialized"/>
+                <RadioButton x:Name="InstallRadio" Content="Install region :" VerticalAlignment="Center" Width="97" Checked="InstallRadio_Checked" Unchecked="InstallRadio_Unchecked" Initialized="InstallRadio_Initialized"/>
+                <TextBox x:Name="HomeRegionTextBox" TextWrapping="Wrap" Width="Auto" VerticalAlignment="Center" Height="29" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0,0" FontSize="14" Initialized="HomeRegionTextBox_Initialized" IsEnabled="False"/>
 
             </StackPanel>
 
         </StackPanel>
         <GroupBox Header="Detal settings of parser" Grid.Row="2" Margin="0,0,0,0">
             <ScrollViewer Height="140" Margin="0,0,19,0" HorizontalScrollBarVisibility="Auto">
-                <StackPanel Height="471" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" CanHorizontallyScroll="True">
+                <StackPanel Height="544" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" CanHorizontallyScroll="True">
                     <StackPanel x:Name="_1ofDetalStack" Height="30" Orientation="Horizontal" Background="#19000000">
                         <TextBlock x:Name="_1" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="1." HorizontalAlignment="Center" VerticalAlignment="Center" Background="White"/>
-                        <TextBlock x:Name="SearchBoxBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Элемент"/><Run Text=" "/><Run Text="строки" FontWeight="Bold"/><Run Text=" "/><Run Text="поиска.XPath :"/></TextBlock>
+                        <TextBlock x:Name="SearchBoxBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Элемент"/><Run Text=" "/><Run Text="строки" FontWeight="Bold"/><Run Text=" "/><Run Text="поиска.Id :"/></TextBlock>
                         <Grid Width="7"/>
                         <TextBox x:Name="SearchBoxBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="SearchBoxBox_Initialized"/>
                     </StackPanel>
@@ -54,57 +60,56 @@
                     </StackPanel>
                     <StackPanel x:Name="_3ofDetalStack" Height="50" Orientation="Horizontal" Background="#19000000">
                         <TextBlock x:Name="_3" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="3." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="VacancyCountBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентир для поиска"/><Run Text=" "/><Run Text="числа найденных вакансий" FontWeight="Bold"/><Run Text=" "/><Run Text=" по запросу.Xpath :"/></TextBlock>
+                        <Grid Width="7"/>
+                        <TextBox x:Name="VacancyCountBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="VacancyCountBox_Initialized"/>
+                    </StackPanel>
+                    <StackPanel x:Name="_4ofDetalStack" Height="50" Orientation="Horizontal" >
+                        <TextBlock x:Name="_4" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="3." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock x:Name="LinkToFullVacancyBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентир для поиска всех"/><Run Text=" "/><Run Text="ссылок на полные вакансии" FontWeight="Bold"/><Run Text=" "/><Run Text=" на странице.CssSelector :"/></TextBlock>
                         <Grid Width="7"/>
                         <TextBox x:Name="LinkToFullVacancyBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="LinkToFullVacancyBox_Initialized"/>
                     </StackPanel>
-                    <StackPanel x:Name="_4ofDetalStack" Height="50" Orientation="Horizontal">
-                        <TextBlock x:Name="_4" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="4." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <StackPanel x:Name="_5ofDetalStack" Height="50" Orientation="Horizontal" Background="#19000000">
+                        <TextBlock x:Name="_5" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="4." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock x:Name="ShortVacancyBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентир для поиска всех"/><Run Text=" "/><Run Text="коротких вакансий" FontWeight="Bold"/><Run Text=" "/><Run Text=" на странице.CssSelector :"/></TextBlock>
                         <Grid Width="7"/>
                         <TextBox x:Name="ShortVacancyBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="ShortVacancyBox_Initialized"/>
                     </StackPanel>
-                    <StackPanel x:Name="_5ofDetalStack" Height="50" Orientation="Horizontal" Background="#19000000">
-                        <TextBlock x:Name="_5" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="5." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <StackPanel x:Name="_6ofDetalStack" Height="50" Orientation="Horizontal">
+                        <TextBlock x:Name="_6" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="5." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock x:Name="NameOfVacancyBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентир для поиска"/><Run Text=" "/><Run Text="заголовка" FontWeight="Bold"/><Run Text=" "/><Run Text="в короткой вакансии.CssSelector :"/></TextBlock>
                         <Grid Width="7"/>
                         <TextBox x:Name="NameOfVacancyBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="NameOfVacancyBox_Initialized"/>
                     </StackPanel>
-                    <StackPanel x:Name="_6ofDetalStack" Height="50" Orientation="Horizontal">
-                        <TextBlock x:Name="_6" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="6." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <StackPanel x:Name="_7ofDetalStack" Height="50" Orientation="Horizontal" Background="#19000000">
+                        <TextBlock x:Name="_7" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="6." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock x:Name="NameOfCompanyBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентир для поиска"/><Run Text=" "/><Run Text="названия компании" FontWeight="Bold"/><Run Text=" "/><Run Text="в короткой вакансии.CssSelector :"/></TextBlock>
                         <Grid Width="7"/>
                         <TextBox x:Name="NameOfCompanyBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="NameOfCompanyBox_Initialized"/>
                     </StackPanel>
-                    <StackPanel x:Name="_7ofDetalStack" Height="50" Orientation="Horizontal" Background="#19000000">
-                        <TextBlock x:Name="_7" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="7." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="CityOfVacancyBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентир для поиска"/><Run Text=" "/><Run Text="города вакансии" FontWeight="Bold"/><Run Text=" "/><Run Text="в короткой вакансии.XPath :"/></TextBlock>
+                    <StackPanel x:Name="_8ofDetalStack" Height="50" Orientation="Horizontal">
+                        <TextBlock x:Name="_8" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="7." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="AdressesOfVacancyBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентир для"/><Run Text=" "/><Run Text="возможных мест" FontWeight="Bold"/><Run Text=" "/><Run Text="поисков города вакансии.XPath :"/></TextBlock>
                         <Grid Width="7"/>
-                        <TextBox x:Name="AdressOfVacancyBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="AdressOfVacancyBox_Initialized"/>
+                        <TextBox x:Name="AdressesOfVacancyBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="AdressesOfVacancyBox_Initialized"/>
                     </StackPanel>
-                    <StackPanel x:Name="_8ofDetalStack_Copy" Height="50" Orientation="Horizontal" Background="#19000000">
-                        <TextBlock x:Name="_8" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="8." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="CityOfVacancyBlock1" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентир для"/><Run Text=" "/><Run Text="альтернативного" FontWeight="Bold"/><Run Text=" "/><Run Text="поиска города вакансии.XPath :"/></TextBlock>
-                        <Grid Width="7"/>
-                        <TextBox x:Name="SpareAdressOfVacancyBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="SpareAdressOfVacancyBox_Initialized"/>
-                    </StackPanel>
-
-                    <StackPanel x:Name="_9ofDetalStack1" Height="50" Orientation="Horizontal">
-                        <TextBlock x:Name="_9" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="9." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="VacancyDescriptionBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентир для поиска"/><Run Text=" "/><Run Text="текста вакансии" FontWeight="Bold"/><Run Text=" "/><Run Text="в полной вакансии.CssSelector :"/></TextBlock>
+                    <StackPanel x:Name="_9ofDetalStack" Height="50" Orientation="Horizontal" Background="#19000000">
+                        <TextBlock x:Name="_9" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="8." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="VacancyDescriptionBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентиры для поиска"/><Run Text=" "/><Run Text="текста вакансии" FontWeight="Bold"/><Run Text=" "/><Run Text="на странице полной вакансии.XPath :"/></TextBlock>
                         <Grid Width="7"/>
                         <TextBox x:Name="VacancyDescriptionBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="VacancyDescriptionBox_Initialized"/>
                     </StackPanel>
-                    <StackPanel x:Name="_10ofDetalStack" Height="50" Orientation="Horizontal" Background="#19000000">
-                        <TextBlock x:Name="_10" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="10." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="RichVacancyDescriptionBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"><Run Text="Ориентир для поиска"/><Run Text=" "/><Run Text="текста вакансии" FontWeight="Bold"/><Run Text=" "/><Run Text="в полной вакансии лендинговой структуры.XPath :"/></TextBlock>
+                    <StackPanel x:Name="_10ofDetalStack" Height="160" Orientation="Horizontal">
+                        <TextBlock x:Name="_10" TextWrapping="Wrap" Width="Auto" Foreground="Black" Text="9." Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="WaysToCityOfSearchBlock" TextWrapping="Wrap" Width="200" Foreground="#FFF43131" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"> <Run Text="[0]" FontWeight="Bold"/> <Run Text="-проверка текущего города и клик по меню выбора городов;"/> <Run Text="[1]" FontWeight="Bold"/> <Run Text="- клик по выбору из всех городов;"/> <Run Text="[2]" FontWeight="Bold"/> <Run Text="- клик по раскрытию списка с первыми буквами городов;"/> <Run Text="[3]" FontWeight="Bold"/> <Run Text="- локатор всплывающего списка с первыми буквами регионов"/><Run Text="[4]" FontWeight="Bold"/> <Run Text="- локатор для блока со всеми открывшимися регионами.XPath:"/></TextBlock>
                         <Grid Width="7"/>
-                        <TextBox x:Name="RichVacancyDescriptionBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="RichVacancyDescriptionBox_Initialized"/>
+                        <TextBox x:Name="WaysToCityOfSearchBox" TextWrapping="Wrap" Width="Auto" Height="18" Initialized="WaysToCityOfSearchBox_Initialized"/>
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </GroupBox>
-        <StackPanel Grid.Row="3" Margin="0,11,189,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Right" Width="266" d:IsLocked="True">
+        <StackPanel Grid.Row="3" Margin="0,11,0,0" HorizontalAlignment="Center" Width="266">
             <StackPanel Orientation="Horizontal" Width="266">
                 <Button x:Name="Oks" Content="Ok" Background="#FFC6BABA" Click="oks_Click" Height="26" Width="110"/>
                 <Grid Width="50"/>

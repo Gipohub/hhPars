@@ -11,7 +11,8 @@
     <PackageReference Include="DeepMorphy" Version="2.0.3" />
     <PackageReference Include="Microsoft-Windows10-APICodePack-Shell" Version="1.1.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.10.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.11.0" />
+    <PackageReference Include="WebDriverManager" Version="2.17.1" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     <PackageReference Include="WindowsAPICodePack.Shell.CommonFileDialogs" Version="1.1.5" />
   </ItemGroup>
