@@ -80,8 +80,8 @@ namespace WpfApp1Tech
             public string Title { get; set; }
             public string Search { get; set; }
 
-            public int CountOfFiles { get; set; }
-            public DateItem(string title, string search, int countOfFiles)
+            public long CountOfFiles { get; set; }
+            public DateItem(string title, string search, long countOfFiles)
             {
                 Title = title;
                 Search = search;

@@ -8,13 +8,13 @@ namespace WpfApp1Tech.Parser
 {
     public class VacancyData
     {
-        public int VacancyId { get; set; }
+        public long VacancyId { get; set; }
         public string NameOfVacancy { get; set; }
         public string NameOfCompany { get; set; }
         public string CityOfVacancy { get; set; }
         public string HerfOfVacancy { get; set; }
         public string TextOfVacancy { get; set; }
-        public VacancyData(int vacancyId, string nameOfVacancy, string nameOfCompany, string cityOfVacancy, string herfOfVacancy, string textOfVacancy)
+        public VacancyData(long vacancyId, string nameOfVacancy, string nameOfCompany, string cityOfVacancy, string herfOfVacancy, string textOfVacancy)
         {
             this.NameOfVacancy = nameOfVacancy;
             this.NameOfCompany = nameOfCompany;

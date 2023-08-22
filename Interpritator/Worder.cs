@@ -12,7 +12,7 @@ namespace WpfApp1Tech.Interpritator
     public class Worder
     {
         //List<TechDictionary> vec = new List<TechDictionary>();
-        public SortedList<string, int[]> pairs = new();
+        public SortedList<string, long[]> pairs = new();
         public Worder(List<TechDictionary> searchingWords/*,string wayToDictionaryFolder*/)
         {
 
@@ -22,7 +22,7 @@ namespace WpfApp1Tech.Interpritator
         }
         void DictResearch(List<TechDictionary> searchingWords)
         {
-            SortedList<string, int[]> wordPair = new();
+            SortedList<string, long[]> wordPair = new();
             foreach (var tecDic in searchingWords)
             {
                 wordPair.Add(tecDic.Word, tecDic.VacancyID);
@@ -32,22 +32,22 @@ namespace WpfApp1Tech.Interpritator
 
         }
 
-        void RecursiveShot(SortedList<string, int[]> pair)
+        void RecursiveShot(SortedList<string, long[]> pair)
         {
             if (pair.Count > 1)
             {
                 for (var i = 1; i < pair.Count; i++)
                 {
-                    IEnumerable<int> both = pair.Values[0].Intersect(pair.Values[i]);
+                    IEnumerable<long> both = pair.Values[0].Intersect(pair.Values[i]);
                     if (both.Any())
                     {
-                        int[] bothInt = new int[both.Count()];
+                        long[] bothInt = new long[both.Count()];
                         int counter = 0;
                         foreach (var t in both)
                         {
                             bothInt[counter++] = t;
                         }
-                        SortedList<string, int[]> result = new();
+                        SortedList<string, long[]> result = new();
                         result.Add($"{pair.Keys[0]} {pair.Keys[i]}", bothInt);///////
                         for (int j = 1; j < pair.Count; j++)
                         {
@@ -73,7 +73,7 @@ namespace WpfApp1Tech.Interpritator
                 }
             }
         }
-        void DictBuilder(SortedList<string, int[]> pairsResult)
+        void DictBuilder(SortedList<string, long[]> pairsResult)
         {
 
         }
@@ -81,9 +81,9 @@ namespace WpfApp1Tech.Interpritator
 
     internal class Wr1wr2
     {
-        public int[] VacancyIDHash { get; set; }
+        public long[] VacancyIDHash { get; set; }
         private List<TechDictionary> Pairs { get; set; }
-        public Wr1wr2(int[] vacancyIDHash, List<TechDictionary> pairs)
+        public Wr1wr2(long[] vacancyIDHash, List<TechDictionary> pairs)
         {
             VacancyIDHash = vacancyIDHash;
             Pairs = pairs;

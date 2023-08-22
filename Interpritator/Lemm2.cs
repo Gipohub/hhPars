@@ -41,7 +41,7 @@ namespace WpfApp1Tech.Interpritator
             string shortParsDate = wayToParsFolder[^10..];
 
             Settings settings = new();
-            TechDictionary test = new(new int[] { 1 }, "софтстэк", 1, false);
+            TechDictionary test = new(new long[] { 1 }, "софтстэк", 1, false);
             List<TechDictionary>? vec = new(); //обьявление словаря
             vec.Add(test);
 
@@ -97,7 +97,7 @@ namespace WpfApp1Tech.Interpritator
                         string upperText = fileText.ToUpper();
 
                         //out int id текущей вакансии для последующей навигации
-                        int currentIdOfVacancy = vacancydata.VacancyId;
+                        long currentIdOfVacancy = vacancydata.VacancyId;
                         var taskWindow = new Lemm2Wind(); //далее сбор таски
 
                         //dic выводится в richTextBox на таске для отображения текущего собранного словаря 
@@ -121,7 +121,7 @@ namespace WpfApp1Tech.Interpritator
                                     vec[i].UsingTimes += 1;
                                     //далее добавление ID текущей вакансии в массив айди всех найденых с этим словом вакансий
                                     int counter = 0;
-                                    int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
+                                    long[] newVacancyID = new long[vec[i].VacancyID.Length + 1];
                                     foreach (var id in vec[i].VacancyID)
                                     {
                                         newVacancyID[counter++] = id;
@@ -228,7 +228,7 @@ namespace WpfApp1Tech.Interpritator
                                         */
                                         //далее добавление ID текущей вакансии в массив айди всех найденых с этим словом вакансий
                                         int counter = 0;
-                                        int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
+                                        long[] newVacancyID = new long[vec[i].VacancyID.Length + 1];
                                         foreach (var id in vec[i].VacancyID)
                                         {
                                             newVacancyID[counter++] = id;
@@ -242,7 +242,7 @@ namespace WpfApp1Tech.Interpritator
                             if (NewTech[i] != "")
 
 
-                                vec.Add(new(new int[] { currentIdOfVacancy }, NewTech[i], 1, true));
+                                vec.Add(new(new long[] { currentIdOfVacancy }, NewTech[i], 1, true));
                         }
 
                         //блок записи всех слов НЕ технологий и подсчет
@@ -293,7 +293,7 @@ namespace WpfApp1Tech.Interpritator
                                         */
                                         //далее добавление ID текущей вакансии в массив айди всех найденых с этим словом вакансий
                                         int counter = 0;
-                                        int[] newVacancyID = new int[vec[i].VacancyID.Length + 1];
+                                        long[] newVacancyID = new long[vec[i].VacancyID.Length + 1];
                                         foreach (var id in vec[i].VacancyID)
                                         {
                                             newVacancyID[counter++] = id;
@@ -310,7 +310,7 @@ namespace WpfApp1Tech.Interpritator
                                 {
                                     //поднимаем первую букву,остальные опускаем и записываем в словарь.
                                     string toUpperfChar = $"{char.ToUpper(lem[0])}{lem[1..].ToLower()}";
-                                    TechDictionary word = new(new int[] { vacancydata.VacancyId }, toUpperfChar, 1, false);
+                                    TechDictionary word = new(new long[] { vacancydata.VacancyId }, toUpperfChar, 1, false);
                                     vec.Add(word);
                                 }
                             }

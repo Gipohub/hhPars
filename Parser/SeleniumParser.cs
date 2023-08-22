@@ -91,6 +91,7 @@ namespace WpfApp1Tech.Parser
             {
                 case 0: // не менять
                     {
+                        settings.HomeRegion = driver.FindElement(By.XPath(settings.WaysToCityOfSearchPointers[0])).Text;
                         break;
                     }
                 case 1: // установить общий
@@ -162,8 +163,13 @@ namespace WpfApp1Tech.Parser
             driver.FindElement(By.XPath($@"{settings.SearchButtonPointer}")).Click();
 
             //находим общее число найденых вакансий по запросу
-            string vacancyCountstr = driver.FindElement(By.XPath($@"{settings.VacancyCountPointer}")).Text;
-            int vacancyCount = 0;
+            string vacancyCountstr = "1";
+            try
+            {
+               vacancyCountstr = driver.FindElement(By.XPath($@"{settings.VacancyCountPointer}")).Text;
+            }
+            catch { }
+                int vacancyCount = 0;
             for (int i = 0; i < vacancyCountstr.Length;i++)
             {
                 if (int.TryParse($"{vacancyCountstr[i]}", out int num))
@@ -197,12 +203,13 @@ namespace WpfApp1Tech.Parser
                             nameOfCompany = companyList[i].FindElement(By.CssSelector(@$"{settings.NameOfCompanyPointer}")).Text;
 
                             //чистим названия воизбежание искажений пути к папке
-                            nameOfVacancy = nameOfVacancy.Replace("/", "");
-                            nameOfCompany = nameOfCompany.Replace("/", "");
-                            nameOfVacancy = nameOfVacancy.Replace("\\", "");
-                            nameOfCompany = nameOfCompany.Replace("\\", "");
+                            char[] stoperPathName = {'"','\'','\\','/','*',':','|'};
+                            foreach(char c in stoperPathName)
+                            {
+                                nameOfVacancy = nameOfVacancy.Replace(c.ToString(), "");
+                                nameOfCompany = nameOfCompany.Replace(c.ToString(), "");
+                            }                         
 
-                            HelperVoids.RndmWait(500, 2000);
                             //переходим на страничку вакансии
                             linkMassive[i].Click();
                             //переключаемся на эту вкладку
@@ -210,7 +217,7 @@ namespace WpfApp1Tech.Parser
                             //запоминаем Url вакансии
                             herfOfVacancy = driver.Url;
 
-
+                            HelperVoids.RndmWait(500, 2000);
                             //собираем текст вакансии
                             //страничка вакансии на hh может быть другой структуры (с банерами)
                             int checker = 1;
@@ -265,22 +272,24 @@ namespace WpfApp1Tech.Parser
                             }
 
                             //генерируем ID вакансии на основе ее данных
-                            if (int.TryParse($"{iterationPars}00{vacancyCount}00{textOfVacancy.Length}", out int vacancyId))
+                            if (long.TryParse($"{iterationPars}00{vacancyCount}00{textOfVacancy.Length}", out long vacancyId))
                             { }
                             else 
                             {
-                                int counter = 1;
-                                for(i = 0; i < vacancyCount.Length(); i++)
+                                
+                                long counter = 1;
+                                for(long j = 1; j < vacancyCount; j *= 10)
                                 {
                                     counter *= 10;
                                 }
-                                vacancyId = (iterationPars * 100 * counter) + vacancyCount * 100; }
+                                vacancyId = ((iterationPars * 100) * counter) + vacancyCount * 100; 
+                            }
 
                             //заворачиваем собранную информацию в класс
                             VacancyData vacancy = new(vacancyId, nameOfVacancy, nameOfCompany, cityOfVacancy, herfOfVacancy, textOfVacancy);
                             try
                             {
-                                string pathStringCompany = Path.Combine(settings.ParsFolder, request, settings.DayToday, $"{nameOfCompany}");
+                                string pathStringCompany = Path.Combine(settings.ParsFolder, request, $"{settings.DayToday} {settings.HomeRegion}", $"{nameOfCompany}");
 
                                 string fileString;
                                 if (Directory.Exists(pathStringCompany))
@@ -312,7 +321,7 @@ namespace WpfApp1Tech.Parser
                             driver.Close();
                             driver.SwitchTo().Window(driver.WindowHandles.First());
                             processedVacancy++;
-                            if (processedVacancy > settings.LimitOfVacancyPars)
+                            if (processedVacancy > settings.LimitOfVacancyPars & settings.LimitOfVacancyPars > 0)
                             {
                                 stoped = true;
                             }
